@@ -12,10 +12,7 @@ namespace GitHub.Unity
 
         public bool Initialized
         {
-            get
-            {
-                return initialized;
-            }
+            get { return initialized; }
             set
             {
                 initialized = value;
@@ -27,11 +24,20 @@ namespace GitHub.Unity
         private const string sourceModePath = "Assets/Editor/build/";
         private const string realPath = "Assets/Plugins/GitHub/Editor/";
 
-        private static string[] assemblies20 = { "System.Threading.dll", "AsyncBridge.Net35.dll", "ReadOnlyCollectionsInterfaces.dll", "GitHub.Api.dll", "GitHub.Unity.dll" };
-        private static string[] assemblies45 = { "GitHub.Api.45.dll", "GitHub.Unity.45.dll" };
+        private static string[] assemblies20 =
+        {
+            "System.Threading.dll", "AsyncBridge.Net35.dll", "ReadOnlyCollectionsInterfaces.dll",
+            "GitHub.Api.dll", "GitHub.Unity.dll"
+        };
+
+        private static string[] assemblies45 = {"GitHub.Api.45.dll", "GitHub.Unity.45.dll"};
 
         private const string GITHUB_UNITY_DISABLE = "GITHUB_UNITY_DISABLE";
-        private static bool IsDisabled { get { return Environment.GetEnvironmentVariable(GITHUB_UNITY_DISABLE) == "1"; } }
+
+        private static bool IsDisabled
+        {
+            get { return Environment.GetEnvironmentVariable(GITHUB_UNITY_DISABLE) == "1"; }
+        }
 
         static ExtensionLoader()
         {
@@ -39,6 +45,7 @@ namespace GitHub.Unity
             {
                 return;
             }
+
             EditorApplication.update += Initialize;
         }
 
@@ -50,13 +57,14 @@ namespace GitHub.Unity
             // we should probably detect if our assets change and re-run this instead of doing it every time
             //if (!ExtensionLoader.instance.Initialized)
             {
-                var scriptPath = Path.Combine(Application.dataPath, "Editor" + Path.DirectorySeparatorChar + "GitHub.Unity" + Path.DirectorySeparatorChar + "EntryPoint.cs");
+                var scriptPath = Path.Combine(Application.dataPath,
+                    "Editor" + Path.DirectorySeparatorChar + "GitHub.Unity" +
+                    Path.DirectorySeparatorChar + "EntryPoint.cs");
                 inSourceMode = File.Exists(scriptPath);
                 ToggleAssemblies();
                 //ExtensionLoader.instance.Initialized = true;
                 AssetDatabase.SaveAssets();
             }
-
         }
 
         private static void ToggleAssemblies()
@@ -79,9 +87,12 @@ namespace GitHub.Unity
                 PluginImporter importer = AssetImporter.GetAtPath(filepath) as PluginImporter;
                 if (importer == null)
                 {
-                    Debug.LogFormat("GitHub for Unity: Could not find importer for {0}. Some functionality may fail.", filepath);
+                    Debug.LogFormat(
+                        "GitHub for Unity: Could not find importer for {0}. Some functionality may fail.",
+                        filepath);
                     continue;
                 }
+
                 if (importer.GetCompatibleWithEditor() != enable)
                 {
                     importer.SetCompatibleWithEditor(enable);
