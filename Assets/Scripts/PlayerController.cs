@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
 public class PlayerController : MonoBehaviour
 {
     /**
@@ -23,6 +24,6 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         var input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        _rigidbody.MovePosition(_rigidbody.position + speed * Time.fixedDeltaTime * input);
+        _rigidbody.velocity = speed * input;
     }
 }
