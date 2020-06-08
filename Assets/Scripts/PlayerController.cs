@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     /**
@@ -9,15 +10,19 @@ public class PlayerController : MonoBehaviour
      */
     public float speed;
 
-    // Start is called before the first frame update
-    void Start()
+    /**
+     * The rigidbody2d component attached to the player.
+     */
+    private Rigidbody2D _rigidbody;
+
+    private void Start()
     {
+        _rigidbody = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         var input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        transform.Translate(speed * Time.deltaTime * input);
+        _rigidbody.MovePosition(_rigidbody.position + speed * Time.fixedDeltaTime * input);
     }
 }

@@ -7,14 +7,12 @@ public class Player : MonoBehaviour
 {
     private PlayerController _controller;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _controller = GetComponent<PlayerController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
     }
 }
