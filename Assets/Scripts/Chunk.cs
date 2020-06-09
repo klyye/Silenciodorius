@@ -10,5 +10,5 @@ public abstract class Chunk : MonoBehaviour
     /// <summary>
     ///     The length in tiles of the side of every chunk.
     /// </summary>
-    public const int LENGTH = 10;
+    public const int LENGTH = 11;
 }

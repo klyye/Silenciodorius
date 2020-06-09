@@ -15,7 +15,7 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     ///     The size to scale each chunk by.
     /// </summary>
-    public uint chunkSize;
+    public float chunkSize;
 
     /// <summary>
     ///     The name of the empty GameObject that acts as the parent to the map.
@@ -68,8 +68,8 @@ public class MapGenerator : MonoBehaviour
     /// </summary>
     public void GenerateMap()
     {
-        var oldMap = transform.Find(holderName).gameObject;
-        if (oldMap) DestroyImmediate(oldMap);
+        var oldMap = transform.Find(holderName);
+        if (oldMap) DestroyImmediate(oldMap.gameObject);
         var mapHolder = new GameObject(holderName).transform;
         mapHolder.parent = transform;
 
