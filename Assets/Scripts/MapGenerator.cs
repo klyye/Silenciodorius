@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Boo.Lang.Runtime;
+using UnityEngine;
+using static Utility;
 
 /// <summary>
 ///     Generates a 2D array of Chunks that represents each level of the dungeon.
@@ -31,6 +33,16 @@ public class MapGenerator : MonoBehaviour
     public uint maxWidth;
 
     /// <summary>
+    ///     The number of rooms to generate in this map.
+    /// </summary>
+    public uint numRooms;
+
+    /// <summary>
+    ///     The length of the path from the spawn point to the stairs.
+    /// </summary>
+    public uint pathLength;
+
+    /// <summary>
     ///     All of the possible corridor chunks that can be spawned.
     /// </summary>
     public Corridor[] possibleCorridors;
@@ -58,22 +70,61 @@ public class MapGenerator : MonoBehaviour
     {
         var oldMap = transform.Find(holderName).gameObject;
         if (oldMap) DestroyImmediate(oldMap);
-
         var mapHolder = new GameObject(holderName).transform;
         mapHolder.parent = transform;
 
+        ValidateVariables();
         _mapLayout = new Chunk[maxWidth, maxHeight];
         Random.InitState(seed);
 
+        var numRoomsRemaining = numRooms;
         for (var x = 0; x < maxWidth; x++)
         for (var y = 0; y < maxHeight; y++)
         {
             var spawnPos = Chunk.LENGTH * chunkSize * new Vector2(x, y);
-            var chunkToSpawn = Utility.RandomElement(possibleRooms);
-            var spawnedObject = Instantiate(chunkToSpawn, spawnPos, Quaternion.identity);
-            spawnedObject.transform.parent = mapHolder;
-            spawnedObject.transform.localScale = chunkSize * Vector2.one;
-            _mapLayout[x, y] = spawnedObject;
+            Chunk chunkPrefab;
+            if (OnBorder(x, y) || numRoomsRemaining <= 0)
+            {
+                chunkPrefab = RandomElement(possibleWalls);
+            }
+            else
+            {
+                chunkPrefab = RandomElement(possibleRooms);
+                numRoomsRemaining--;
+            }
+
+            var spawnedChunk = Instantiate(chunkPrefab, spawnPos, Quaternion.identity);
+            spawnedChunk.transform.parent = mapHolder;
+            spawnedChunk.transform.localScale = chunkSize * Vector2.one;
+            _mapLayout[x, y] = spawnedChunk;
         }
+    }
+
+    /// <summary>
+    ///     Throws exceptions of public variables are set to invalid values. This system of error
+    ///     checking seems a bit bad, is there a way to restrict one variable to another in the editor?
+    /// </summary>
+    private void ValidateVariables()
+    {
+        if (numRooms > (maxHeight - 2) * (maxWidth - 2))
+            throw new RuntimeException("Number of rooms exceed maximum.");
+
+        if (pathLength > numRooms)
+            throw new RuntimeException("Path length exceeds number of rooms.");
+    }
+
+    private void PlaceRooms()
+    {
+    }
+
+    /// <summary>
+    ///     Is (x, y) on the border of the map?
+    /// </summary>
+    /// <param name="x">The horizontal position of the point.</param>
+    /// <param name="y">The vertical position of the point.</param>
+    /// <returns>Whether x, y lies on the border of the map.</returns>
+    private bool OnBorder(int x, int y)
+    {
+        return x == 0 || y == 0 || x == maxWidth - 1 || y == maxHeight - 1;
     }
 }

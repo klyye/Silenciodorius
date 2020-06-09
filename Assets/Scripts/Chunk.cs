@@ -6,14 +6,6 @@ using UnityEngine;
 /// </summary>
 public abstract class Chunk : MonoBehaviour
 {
-    [Serializable]
-    public enum Direction
-    {
-        North,
-        East,
-        South,
-        West
-    }
 
     /// <summary>
     ///     The length in tiles of the side of every chunk.
