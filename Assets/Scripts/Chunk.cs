@@ -1,23 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 /// <summary>
-/// Represents a LENGTH x LENGTH section of lines. This is the basic unit used in MapGenerator.cs.
+///     Represents a LENGTH x LENGTH section of lines. This is the basic unit used in MapGenerator.cs.
 /// </summary>
-public class Chunk : MonoBehaviour
+public abstract class Chunk : MonoBehaviour
 {
-    public static int length;
-    
-    // Start is called before the first frame update
-    void Start()
+    [Serializable]
+    public enum Direction
     {
-        
+        North,
+        East,
+        South,
+        West
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    /// <summary>
+    ///     The length in tiles of the side of every chunk.
+    /// </summary>
+    public const int LENGTH = 10;
 }

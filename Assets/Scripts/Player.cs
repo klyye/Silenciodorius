@@ -1,16 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
-/// Handles aspects of the Player that do NOT correspond to player input.
+///     Handles aspects of the Player that do NOT correspond to player input.
 /// </summary>
 [RequireComponent(typeof(PlayerController))]
 public class Player : MonoBehaviour
 {
-    
     /// <summary>
-    /// The controller associated with the player.
+    ///     The controller associated with the player.
     /// </summary>
     private PlayerController _controller;
 
