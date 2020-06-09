@@ -11,7 +11,7 @@ public class MapGenerator : MonoBehaviour
     private Chunk[,] _mapLayout;
 
     /// <summary>
-    ///     TODO: temporary variable, delete this!
+    ///     The size to scale each chunk by.
     /// </summary>
     public uint chunkSize;
 
@@ -31,9 +31,19 @@ public class MapGenerator : MonoBehaviour
     public uint maxWidth;
 
     /// <summary>
-    ///     All of the possible chunks types that can be spawned.
+    ///     All of the possible corridor chunks that can be spawned.
     /// </summary>
-    public Chunk[] possibleChunks;
+    public Corridor[] possibleCorridors;
+
+    /// <summary>
+    ///     All of the possible room chunks that can be spawned.
+    /// </summary>
+    public Room[] possibleRooms;
+
+    /// <summary>
+    ///     All of the possible wall chunks that can be spawned.
+    /// </summary>
+    public Wall[] possibleWalls;
 
     /// <summary>
     ///     The seed for the pseudorandom number generator that determines the randomness for this map.
@@ -58,11 +68,11 @@ public class MapGenerator : MonoBehaviour
         for (var x = 0; x < maxWidth; x++)
         for (var y = 0; y < maxHeight; y++)
         {
-            var spawnPos = chunkSize * new Vector2(x, y);
-            var chunkToSpawn = Utility.RandomElement(possibleChunks);
-            print("Chunk to spawn: " + chunkToSpawn);
+            var spawnPos = Chunk.LENGTH * chunkSize * new Vector2(x, y);
+            var chunkToSpawn = Utility.RandomElement(possibleRooms);
             var spawnedObject = Instantiate(chunkToSpawn, spawnPos, Quaternion.identity);
             spawnedObject.transform.parent = mapHolder;
+            spawnedObject.transform.localScale = chunkSize * Vector2.one;
             _mapLayout[x, y] = spawnedObject;
         }
     }
