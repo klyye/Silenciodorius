@@ -6,7 +6,9 @@ using UnityEngine;
 /// </summary>
 public abstract class Chunk : MonoBehaviour
 {
-
+    
+    public Direction[] openings;
+    
     /// <summary>
     ///     The length in tiles of the side of every chunk.
     /// </summary>
