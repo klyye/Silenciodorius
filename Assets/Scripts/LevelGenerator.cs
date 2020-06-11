@@ -95,7 +95,10 @@ public class LevelGenerator : MonoBehaviour
         _spawnPositions = new Queue<Tuple<Vector2, Direction>>();
         EnqueueAdjacentPositions(startPos);
         for (var i = 0; i < iterations; i++)
+        {
             GenerateLayer(i % 2 == 0 ? (Chunk[]) possibleCorridors : possiblePathRooms);
+            Print2DArray(_levelLayout);
+        }
 
         var stairPos = _spawnPositions.Dequeue().Item1;
         _levelLayout[(int) stairPos.x, (int) stairPos.y] = RandomElement(possibleStairRooms);
@@ -125,24 +128,41 @@ public class LevelGenerator : MonoBehaviour
     /// <param name="possibleChunks">All possible chunks to spawn in this layer.</param>
     private void GenerateLayer(Chunk[] possibleChunks)
     {
-        for (var i = 0; _spawnPositions.Count > 0 && i < chunksPerIteration; i++)
+        for (var i = 0; _spawnPositions.Count > 1 && i < chunksPerIteration; i++)
         {
-            var nextPosDir = _spawnPositions.Dequeue();
-            var nextPos = nextPosDir.Item1;
-            var nextDir = nextPosDir.Item2;
-            while (_levelLayout[(int) nextPos.x, (int) nextPos.y])
-            {
-                nextPosDir = _spawnPositions.Dequeue();
-                nextPos = nextPosDir.Item1;
-                nextDir = nextPosDir.Item2;
-            }
-
+            var (nextPos, nextDir) = _spawnPositions.Dequeue();
             var nextChunk = RandomElement(possibleChunks);
-            while (!Array.Exists(nextChunk.openings, d => d == nextDir))
-                nextChunk = RandomElement(possibleChunks);
+            foreach (var c in ShuffleArray(possibleChunks))
+            {
+                if (!ExtendsPath(c, nextDir, nextPos)) continue;
+                nextChunk = c;
+                break;
+            }
             _levelLayout[(int) nextPos.x, (int) nextPos.y] = nextChunk;
             EnqueueAdjacentPositions(nextPos);
         }
+    }
+
+    /// <summary>
+    ///     Checks if putting the chunk CHUNK at position POS results in CHUNK having an unblocked
+    ///     opening.
+    /// </summary>
+    /// <param name="chunk">The type of chunk to place.</param>
+    /// <param name="inDir">The direction of opening that CHUNK must have.</param>
+    /// <param name="pos">The position on _levelLayout that we're placing CHUNK at.</param>
+    /// <returns>Whether putting CHUNK at POS coming in from INDIR extends the path.</returns>
+    private bool ExtendsPath(Chunk chunk, Direction inDir, Vector2 pos)
+    {
+        var entrance = false;
+        var openPath = false;
+        foreach (var dir in chunk.openings)
+        {
+            if (dir == inDir) entrance = true;
+            var checkPos = pos + dir.ToVector2();
+            if (!_levelLayout[(int) checkPos.x, (int) checkPos.y]) openPath = true;
+        }
+
+        return entrance && openPath;
     }
 
     /// <summary>

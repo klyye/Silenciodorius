@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -64,5 +66,25 @@ public static class Utility
         }
         return output;
     }
-    
+
+    /// <summary>
+    ///     Prints the contents of a 2d array.
+    /// </summary>
+    /// <param name="arr">The 2d array to print.</param>
+    /// <typeparam name="T">The type of the array.</typeparam>
+    public static void Print2DArray<T>(T[,] arr)
+    {
+        var builder = new StringBuilder();
+        for (var x = 0; x < arr.GetLength(0); x++)
+        {
+            builder.Append("[");
+            for (var y = 0; y < arr.GetLength(1); y++)
+            {
+                builder.Append(arr[x, y]);
+                builder.Append(",\t");
+            }
+            builder.Append("],\n");
+        }
+        MonoBehaviour.print(builder);
+    }
 }

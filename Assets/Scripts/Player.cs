@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 ///     Handles aspects of the Player that do NOT correspond to player input.
@@ -18,5 +19,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        print("Triggered!");
+        print(other.gameObject.tag);
     }
 }
