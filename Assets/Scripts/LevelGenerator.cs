@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Boo.Lang.Runtime;
+using static GameException;
 using ExtensionMethods;
 using UnityEngine;
 using static Utility;
@@ -81,7 +81,8 @@ public class LevelGenerator : MonoBehaviour
     /// <summary>
     ///     Instantiates the dungeon level according to the public variables.
     /// </summary>
-    public void GenerateLevel()
+    /// <returns>The empty Transform that holds all of the map objects.</returns>
+    public Transform GenerateLevel()
     {
         ValidateVariables();
         _levelLayout = new Chunk[(int) dimensions.x, (int) dimensions.y];
@@ -103,7 +104,7 @@ public class LevelGenerator : MonoBehaviour
         var stairPos = _spawnPositions.Dequeue().Item1;
         _levelLayout[(int) stairPos.x, (int) stairPos.y] = RandomElement(possibleStairRooms);
         FillWithWalls();
-        InstantiateLevelLayout();
+        return InstantiateLevelLayout();
     }
 
     /// <summary>
@@ -138,6 +139,7 @@ public class LevelGenerator : MonoBehaviour
                 nextChunk = c;
                 break;
             }
+
             _levelLayout[(int) nextPos.x, (int) nextPos.y] = nextChunk;
             EnqueueAdjacentPositions(nextPos);
         }
@@ -168,7 +170,8 @@ public class LevelGenerator : MonoBehaviour
     /// <summary>
     ///     Goes through every element in _levelLayout and instantiates it at the proper position!
     /// </summary>
-    private void InstantiateLevelLayout()
+    /// <returns>The empty transform that holds the instantiated map.</returns>
+    private Transform InstantiateLevelLayout()
     {
         var oldMap = transform.Find(holderName);
         if (oldMap) DestroyImmediate(oldMap.gameObject);
@@ -183,6 +186,8 @@ public class LevelGenerator : MonoBehaviour
             spawnedChunk.transform.parent = levelHolder;
             spawnedChunk.transform.localScale = chunkSize * Vector2.one;
         }
+
+        return levelHolder;
     }
 
     /// <summary>
@@ -227,7 +232,7 @@ public class LevelGenerator : MonoBehaviour
     private void ValidateVariables()
     {
         if (dimensions.x < 0 || dimensions.y < 0)
-            throw new RuntimeException("Can't have negative dimensions.");
+            throw Error("Can't have negative dimensions.");
 
         dimensions.x = Mathf.Round(dimensions.x);
         dimensions.y = Mathf.Round(dimensions.y);

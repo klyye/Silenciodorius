@@ -1,4 +1,5 @@
-﻿using Boo.Lang.Runtime;
+﻿using System;
+using static GameException;
 using UnityEngine;
 
 namespace ExtensionMethods
@@ -26,7 +27,7 @@ namespace ExtensionMethods
                 case Direction.West:
                     return Vector2.left;
                 default:
-                    throw new RuntimeException("Invalid direction. You should never see this.");
+                    throw Error("Invalid direction. You should never see this.");
             }
         }
 
@@ -48,7 +49,7 @@ namespace ExtensionMethods
                 case Direction.West:
                     return Direction.East;
                 default:
-                    throw new RuntimeException("Invalid direction. You should never see this.");
+                    throw Error("Invalid direction. You should never see this.");
             }
         }
     }
