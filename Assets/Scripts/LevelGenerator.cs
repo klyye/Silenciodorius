@@ -51,11 +51,6 @@ public class LevelGenerator : MonoBehaviour
     public uint iterations;
 
     /// <summary>
-    ///     The minimum number of pathable chunks to be generated.
-    /// </summary>
-    public uint minChunks;
-
-    /// <summary>
     ///     All of the possible corridor chunks that can be spawned.
     /// </summary>
     public Corridor[] possibleCorridors;
@@ -94,14 +89,14 @@ public class LevelGenerator : MonoBehaviour
         ValidateVariables();
         Random.InitState(seed);
         _pathableChunks = 0;
-        while (_pathableChunks < minChunks)
+        while (_pathableChunks < Mathf.Min(7, iterations * chunksPerIteration)) //TODO: Replace hardcoded value
         {
             _levelLayout = new Chunk[dimensions.x, dimensions.y];
             LayoutBorderWall(RandomElement(possibleWalls));
             _pathableChunks = 0;
 
-            var startPos = new Vector2Int(Random.Range(1, dimensions.x - 1),
-                Random.Range(1, dimensions.y - 1));
+            var startPos = new Vector2Int(Random.Range(2, dimensions.x - 2),
+                Random.Range(2, dimensions.y - 2));
             var startChunk = RandomElement(possibleStartRooms);
             _levelLayout[startPos.x, startPos.y] = startChunk;
             _pathableChunks++;
@@ -115,7 +110,7 @@ public class LevelGenerator : MonoBehaviour
             _levelLayout[stairPos.x, stairPos.y] = RandomElement(possibleStairRooms);
             _pathableChunks++;
         }
-
+        
         FillWithWalls();
         return InstantiateLevelLayout();
     }
@@ -150,7 +145,9 @@ public class LevelGenerator : MonoBehaviour
             var nextDir = nextEntry.Value;
             _spawnPositions.Remove(nextPos);
             var nextChunk = RandomElement(possibleChunks);
-            foreach (var c in ShuffleArray(possibleChunks))
+            foreach (var c in ShuffleArray(possibleChunks)) 
+                //TODO: Bug where if there is no chunk that extends the path,
+                // then it selects a random chunk that isn't necessarily connected to the previous.
             {
                 if (ExtendsPath(nextChunk, nextDir, nextPos)) break;
                 nextChunk = c;
@@ -180,7 +177,6 @@ public class LevelGenerator : MonoBehaviour
             var checkPos = pos + dir.ToVector2();
             if (!_levelLayout[checkPos.x, checkPos.y]) openPath = true;
         }
-
         return entrance && openPath;
     }
 
@@ -199,6 +195,7 @@ public class LevelGenerator : MonoBehaviour
         {
             var spawnPos = Chunk.LENGTH * chunkSize * new Vector2(x, y);
             var chunkPrefab = _levelLayout[x, y];
+            if (!chunkPrefab) continue;
             var spawnedChunk = Instantiate(chunkPrefab, spawnPos, Quaternion.identity);
             spawnedChunk.transform.parent = levelHolder;
             spawnedChunk.transform.localScale = chunkSize * Vector2.one;
@@ -248,7 +245,7 @@ public class LevelGenerator : MonoBehaviour
     /// </summary>
     private void ValidateVariables()
     {
-        if (dimensions.x < 0 || dimensions.y < 0)
-            throw Error("Can't have negative dimensions.");
+        if (dimensions.x < 5 || dimensions.y < 5)
+            throw Error("Must be larger than 4x4.");
     }
 }
