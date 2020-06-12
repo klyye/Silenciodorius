@@ -89,7 +89,8 @@ public class LevelGenerator : MonoBehaviour
         ValidateVariables();
         Random.InitState(seed);
         _pathableChunks = 0;
-        while (_pathableChunks < Mathf.Min(7, iterations * chunksPerIteration)) //TODO: Replace hardcoded value
+        while (_pathableChunks < Mathf.Min(7, iterations * chunksPerIteration))
+            //TODO: Replace hardcoded value
         {
             _levelLayout = new Chunk[dimensions.x, dimensions.y];
             LayoutBorderWall(RandomElement(possibleWalls));
@@ -110,7 +111,7 @@ public class LevelGenerator : MonoBehaviour
             _levelLayout[stairPos.x, stairPos.y] = RandomElement(possibleStairRooms);
             _pathableChunks++;
         }
-        
+
         FillWithWalls();
         return InstantiateLevelLayout();
     }
@@ -145,7 +146,7 @@ public class LevelGenerator : MonoBehaviour
             var nextDir = nextEntry.Value;
             _spawnPositions.Remove(nextPos);
             var nextChunk = RandomElement(possibleChunks);
-            foreach (var c in ShuffleArray(possibleChunks)) 
+            foreach (var c in ShuffleArray(possibleChunks))
                 //TODO: Bug where if there is no chunk that extends the path,
                 // then it selects a random chunk that isn't necessarily connected to the previous.
             {
@@ -177,6 +178,7 @@ public class LevelGenerator : MonoBehaviour
             var checkPos = pos + dir.ToVector2();
             if (!_levelLayout[checkPos.x, checkPos.y]) openPath = true;
         }
+
         return entrance && openPath;
     }
 
@@ -226,7 +228,6 @@ public class LevelGenerator : MonoBehaviour
                 _levelLayout[x, y] = RandomElement(possibleWalls);
     }
 
-
     /// <summary>
     ///     Checks if _levelLayout[pos.x, pos.y] gives array out of bounds exception.
     /// </summary>
@@ -236,7 +237,6 @@ public class LevelGenerator : MonoBehaviour
     {
         return pos.x >= 0 && pos.x <= dimensions.x && pos.y >= 0 && pos.y <= dimensions.y;
     }
-
 
     /// <summary>
     ///     Throws exceptions of public variables are set to invalid values. This system of error
