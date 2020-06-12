@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -61,9 +62,8 @@ public static class Utility
         var output = new T[arr.Length];
         Array.Copy(arr, output, arr.Length);
         for (var i = 0; i < arr.Length - 1; i++)
-        {
             SwapElements(output, i, Random.Range(i, arr.Length));
-        }
+
         return output;
     }
 
@@ -83,8 +83,29 @@ public static class Utility
                 builder.Append(arr[x, y]);
                 builder.Append(",\t");
             }
+
             builder.Append("],\n");
         }
+
         MonoBehaviour.print(builder);
+    }
+
+    /// <summary>
+    ///     Uses UnityEngine.Random to get a random element from a Dictionary.
+    /// </summary>
+    /// <param name="dict">The dictionary to get a random element from.</param>
+    /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+    /// <typeparam name="TVal">The type of the values in the dictionary.</typeparam>
+    /// <returns>A random KeyValuePair from the dictionary.</returns>
+    public static KeyValuePair<TKey, TVal> RandomEntry<TKey, TVal>(IDictionary<TKey, TVal> dict)
+    {
+        var entryNum = Random.Range(1, dict.Count);
+        var iter = dict.GetEnumerator();
+        for (var i = 0; i < entryNum; i++)
+        {
+            iter.MoveNext();
+        }
+
+        return iter.Current;
     }
 }

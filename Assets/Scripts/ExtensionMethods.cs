@@ -14,18 +14,18 @@ namespace ExtensionMethods
         ///     Converts a cardinal direction to a unit vector pointing in its direction.
         /// </summary>
         /// <returns>A unit vector pointing in DIRECTION.</returns>
-        public static Vector2 ToVector2(this Direction direction)
+        public static Vector2Int ToVector2(this Direction direction)
         {
             switch (direction)
             {
                 case Direction.East:
-                    return Vector2.right;
+                    return Vector2Int.right;
                 case Direction.North:
-                    return Vector2.up;
+                    return Vector2Int.up;
                 case Direction.South:
-                    return Vector2.down;
+                    return Vector2Int.down;
                 case Direction.West:
-                    return Vector2.left;
+                    return Vector2Int.left;
                 default:
                     throw Error("Invalid direction. You should never see this.");
             }

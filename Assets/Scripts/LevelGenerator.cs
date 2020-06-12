@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using static GameException;
+﻿using System.Collections.Generic;
 using ExtensionMethods;
 using UnityEngine;
+using static GameException;
 using static Utility;
-using Random = UnityEngine.Random;
 
 /// <summary>
 ///     Generates a 2D array of Chunks that represents each level of the dungeon.
@@ -17,10 +15,14 @@ public class LevelGenerator : MonoBehaviour
     private Chunk[,] _levelLayout;
 
     /// <summary>
-    ///     A queue of valid positions to spawn chunks. Each tuple represents a position and the
-    ///     direction to connect the tuple from.
+    ///     The number of chunks generated that the player can walk in.
     /// </summary>
-    private Queue<Tuple<Vector2, Direction>> _spawnPositions;
+    private uint _pathableChunks;
+
+    /// <summary>
+    ///     A mapping of valid spawn positions to the directions to enter them from.
+    /// </summary>
+    private IDictionary<Vector2Int, Direction> _spawnPositions;
 
     /// <summary>
     ///     The size to scale each chunk by.
@@ -36,7 +38,7 @@ public class LevelGenerator : MonoBehaviour
     ///     dimensions.x -> the maximum width of the map
     ///     dimensions.y -> the maximum height of the map
     /// </summary>
-    public Vector2 dimensions;
+    public Vector2Int dimensions;
 
     /// <summary>
     ///     The name of the empty GameObject that acts as the parent to the level.
@@ -47,6 +49,11 @@ public class LevelGenerator : MonoBehaviour
     ///     The number of iterations for the algorithm to take. The more iterations, the more rooms.
     /// </summary>
     public uint iterations;
+
+    /// <summary>
+    ///     The minimum number of pathable chunks to be generated.
+    /// </summary>
+    public uint minChunks;
 
     /// <summary>
     ///     All of the possible corridor chunks that can be spawned.
@@ -85,24 +92,30 @@ public class LevelGenerator : MonoBehaviour
     public Transform GenerateLevel()
     {
         ValidateVariables();
-        _levelLayout = new Chunk[(int) dimensions.x, (int) dimensions.y];
         Random.InitState(seed);
-        LayoutBorderWall(RandomElement(possibleWalls));
-
-        var startPos = new Vector2(Random.Range(1, (int) dimensions.x - 1),
-            Random.Range(1, (int) dimensions.y - 1));
-        var startChunk = RandomElement(possibleStartRooms);
-        _levelLayout[(int) startPos.x, (int) startPos.y] = startChunk;
-        _spawnPositions = new Queue<Tuple<Vector2, Direction>>();
-        EnqueueAdjacentPositions(startPos);
-        for (var i = 0; i < iterations; i++)
+        _pathableChunks = 0;
+        while (_pathableChunks < minChunks)
         {
-            GenerateLayer(i % 2 == 0 ? (Chunk[]) possibleCorridors : possiblePathRooms);
-            Print2DArray(_levelLayout);
+            _levelLayout = new Chunk[dimensions.x, dimensions.y];
+            LayoutBorderWall(RandomElement(possibleWalls));
+            _pathableChunks = 0;
+
+            var startPos = new Vector2Int(Random.Range(1, dimensions.x - 1),
+                Random.Range(1, dimensions.y - 1));
+            var startChunk = RandomElement(possibleStartRooms);
+            _levelLayout[startPos.x, startPos.y] = startChunk;
+            _pathableChunks++;
+            _spawnPositions = new Dictionary<Vector2Int, Direction>();
+            AddAdjacentPositions(startPos);
+            for (var i = 0; i < iterations; i++)
+                GenerateLayer(i % 2 == 0 ? (Chunk[]) possibleCorridors : possiblePathRooms);
+            //Print2DArray(_levelLayout);
+
+            var stairPos = RandomEntry(_spawnPositions).Key;
+            _levelLayout[stairPos.x, stairPos.y] = RandomElement(possibleStairRooms);
+            _pathableChunks++;
         }
 
-        var stairPos = _spawnPositions.Dequeue().Item1;
-        _levelLayout[(int) stairPos.x, (int) stairPos.y] = RandomElement(possibleStairRooms);
         FillWithWalls();
         return InstantiateLevelLayout();
     }
@@ -111,14 +124,15 @@ public class LevelGenerator : MonoBehaviour
     ///     Adds all of the openings of the chunk at startPos to _spawnPositions.
     /// </summary>
     /// <param name="startPos">The position of chunk whose adjacent positions to enqueue.</param>
-    private void EnqueueAdjacentPositions(Vector2 startPos)
+    private void AddAdjacentPositions(Vector2Int startPos)
     {
-        var startChunk = _levelLayout[(int) startPos.x, (int) startPos.y];
+        var startChunk = _levelLayout[startPos.x, startPos.y];
         foreach (var dir in ShuffleArray(startChunk.openings))
         {
             var checkPos = startPos + dir.ToVector2();
-            if (WithinBounds(checkPos) && !_levelLayout[(int) checkPos.x, (int) checkPos.y])
-                _spawnPositions.Enqueue(new Tuple<Vector2, Direction>(checkPos, dir.Opposite()));
+            if (WithinBounds(checkPos) && !_levelLayout[checkPos.x, checkPos.y] &&
+                !_spawnPositions.ContainsKey(checkPos))
+                _spawnPositions.Add(checkPos, dir.Opposite());
         }
     }
 
@@ -131,17 +145,20 @@ public class LevelGenerator : MonoBehaviour
     {
         for (var i = 0; _spawnPositions.Count > 1 && i < chunksPerIteration; i++)
         {
-            var (nextPos, nextDir) = _spawnPositions.Dequeue();
+            var nextEntry = RandomEntry(_spawnPositions);
+            var nextPos = nextEntry.Key;
+            var nextDir = nextEntry.Value;
+            _spawnPositions.Remove(nextPos);
             var nextChunk = RandomElement(possibleChunks);
             foreach (var c in ShuffleArray(possibleChunks))
             {
-                if (!ExtendsPath(c, nextDir, nextPos)) continue;
+                if (ExtendsPath(nextChunk, nextDir, nextPos)) break;
                 nextChunk = c;
-                break;
             }
 
-            _levelLayout[(int) nextPos.x, (int) nextPos.y] = nextChunk;
-            EnqueueAdjacentPositions(nextPos);
+            _levelLayout[nextPos.x, nextPos.y] = nextChunk;
+            _pathableChunks++;
+            AddAdjacentPositions(nextPos);
         }
     }
 
@@ -153,7 +170,7 @@ public class LevelGenerator : MonoBehaviour
     /// <param name="inDir">The direction of opening that CHUNK must have.</param>
     /// <param name="pos">The position on _levelLayout that we're placing CHUNK at.</param>
     /// <returns>Whether putting CHUNK at POS coming in from INDIR extends the path.</returns>
-    private bool ExtendsPath(Chunk chunk, Direction inDir, Vector2 pos)
+    private bool ExtendsPath(Chunk chunk, Direction inDir, Vector2Int pos)
     {
         var entrance = false;
         var openPath = false;
@@ -161,7 +178,7 @@ public class LevelGenerator : MonoBehaviour
         {
             if (dir == inDir) entrance = true;
             var checkPos = pos + dir.ToVector2();
-            if (!_levelLayout[(int) checkPos.x, (int) checkPos.y]) openPath = true;
+            if (!_levelLayout[checkPos.x, checkPos.y]) openPath = true;
         }
 
         return entrance && openPath;
@@ -196,9 +213,9 @@ public class LevelGenerator : MonoBehaviour
     private void LayoutBorderWall(Wall wall)
     {
         for (var x = 0; x < dimensions.x; x++)
-            _levelLayout[x, (int) dimensions.y - 1] = _levelLayout[x, 0] = wall;
+            _levelLayout[x, dimensions.y - 1] = _levelLayout[x, 0] = wall;
         for (var y = 0; y < dimensions.y; y++)
-            _levelLayout[(int) dimensions.x - 1, y] = _levelLayout[0, y] = wall;
+            _levelLayout[dimensions.x - 1, y] = _levelLayout[0, y] = wall;
     }
 
     /// <summary>
@@ -218,7 +235,7 @@ public class LevelGenerator : MonoBehaviour
     /// </summary>
     /// <param name="pos">The position to check.</param>
     /// <returns>True if no exception would be thrown, false otherwise.</returns>
-    private bool WithinBounds(Vector2 pos)
+    private bool WithinBounds(Vector2Int pos)
     {
         return pos.x >= 0 && pos.x <= dimensions.x && pos.y >= 0 && pos.y <= dimensions.y;
     }
@@ -233,8 +250,5 @@ public class LevelGenerator : MonoBehaviour
     {
         if (dimensions.x < 0 || dimensions.y < 0)
             throw Error("Can't have negative dimensions.");
-
-        dimensions.x = Mathf.Round(dimensions.x);
-        dimensions.y = Mathf.Round(dimensions.y);
     }
 }
