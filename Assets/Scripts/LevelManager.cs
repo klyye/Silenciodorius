@@ -13,7 +13,12 @@ public class LevelManager : MonoBehaviour
     ///     The currently loaded level.
     /// </summary>
     private Level _currLevel;
-    
+
+    /// <summary>
+    ///     How many floors we have advanced past.
+    /// </summary>
+    private uint _depth;
+
     /// <summary>
     ///     The size to scale each chunk by.
     /// </summary>
@@ -31,6 +36,33 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        _depth = 0;
+        InstantiateCurrentLevel();
+        
+    }
+
+    /// <summary>
+    ///     Adjusts the parameters of _levelGen in order to get more difficult with depth.
+    /// </summary>
+    private void SetDifficulty()
+    {
+        // TODO
+    }
+
+    /// <summary>
+    ///     Advances to the next level.
+    /// </summary>
+    private void OnStairsReached()
+    {
+        // TODO 
+    }
+
+    /// <summary>
+    ///     Increases the depth and generates an appropriate level for that depth.
+    /// </summary>
+    private void AdvanceLevel()
+    {
+        
     }
 
     /// <summary>

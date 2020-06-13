@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     /// </summary>
     private PlayerController _controller;
 
+    public event Action OnStairReached;
+
     private void Start()
     {
         _controller = GetComponent<PlayerController>();
@@ -23,7 +25,6 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        print("Triggered!");
-        print(other.gameObject.tag);
+        OnStairReached?.Invoke();
     }
 }
