@@ -1,20 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
+/// <summary>
+///     Handles aspects of the Player that do NOT correspond to player input.
+/// </summary>
 [RequireComponent(typeof(PlayerController))]
 public class Player : MonoBehaviour
 {
+    /// <summary>
+    ///     The controller associated with the player.
+    /// </summary>
     private PlayerController _controller;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _controller = GetComponent<PlayerController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        print("Triggered!");
+        print(other.gameObject.tag);
     }
 }
