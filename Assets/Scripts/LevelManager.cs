@@ -44,7 +44,8 @@ public class LevelManager : MonoBehaviour
         mapHolder.parent = transform;
         
         _levelGen = GetComponent<LevelGenerator>();
-        _currLevel = _levelGen.GenerateLevel();
+        _currLevel = _levelGen.GenerateLevel();    // TODO FIX THIS
+        
         for (var x = 0; x < _currLevel.levelLayout.GetLength(0); x++)
         for (var y = 0; y < _currLevel.levelLayout.GetLength(1); y++)
         {
