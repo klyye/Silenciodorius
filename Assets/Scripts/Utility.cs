@@ -38,6 +38,23 @@ public static class Utility
     }
 
     /// <summary>
+    ///     Uses UnityEngine.Random to get a random element from ARR that satisfies PRED. You must
+    ///     set the seed beforehand if you want consistent randomness.
+    /// </summary>
+    /// <param name="arr">The array to select an element from.</param>
+    /// <param name="pred">The condition that the random element must satisfy.</param>
+    /// <typeparam name="T">The type of the array.</typeparam>
+    /// <returns>
+    ///     A random element x from ARR such that pred(x) is true, if one exists.
+    ///     default(T) otherwise.
+    /// </returns>
+    public static T RandomElement<T>(T[] arr, Predicate<T> pred)
+    {
+        var filtered = Array.FindAll(arr, pred);
+        return filtered.Length > 0 ? RandomElement(filtered) : default;
+    }
+
+    /// <summary>
     ///     Swaps the elements of ARR at indices I and J.
     /// </summary>
     /// <param name="arr">The array whose elements should be swapped.</param>
@@ -101,10 +118,7 @@ public static class Utility
     {
         var entryNum = Random.Range(1, dict.Count);
         var iter = dict.GetEnumerator();
-        for (var i = 0; i < entryNum; i++)
-        {
-            iter.MoveNext();
-        }
+        for (var i = 0; i < entryNum; i++) iter.MoveNext();
 
         return iter.Current;
     }

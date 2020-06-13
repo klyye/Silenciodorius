@@ -13,4 +13,9 @@ public abstract class Chunk : MonoBehaviour
     ///     The length in tiles of the side of every chunk.
     /// </summary>
     public const int LENGTH = 11;
+
+    public bool HasOpening(Direction dir)
+    {
+        return Array.Exists(openings, d => dir == d);
+    }
 }

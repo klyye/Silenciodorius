@@ -145,15 +145,9 @@ public class LevelGenerator : MonoBehaviour
             var nextPos = nextEntry.Key;
             var nextDir = nextEntry.Value;
             _spawnPositions.Remove(nextPos);
-            var nextChunk = RandomElement(possibleChunks);
-            foreach (var c in ShuffleArray(possibleChunks))
-                //TODO: Bug where if there is no chunk that extends the path,
-                // then it selects a random chunk that isn't necessarily connected to the previous.
-            {
-                if (ExtendsPath(nextChunk, nextDir, nextPos)) break;
-                nextChunk = c;
-            }
-
+            var nextChunk = RandomElement(possibleChunks, c => ExtendsPath(c, nextDir, nextPos));
+            if (nextChunk == null)
+                nextChunk = RandomElement(possibleChunks, c => c.HasOpening(nextDir));
             _levelLayout[nextPos.x, nextPos.y] = nextChunk;
             _pathableChunks++;
             AddAdjacentPositions(nextPos);
@@ -247,5 +241,8 @@ public class LevelGenerator : MonoBehaviour
     {
         if (dimensions.x < 5 || dimensions.y < 5)
             throw Error("Must be larger than 4x4.");
+        if (iterations == 0) throw Error("Iterations must be a positive value.");
+
+        if (chunksPerIteration == 0) throw Error("Chunks per iteration must be a positive value.");
     }
 }
