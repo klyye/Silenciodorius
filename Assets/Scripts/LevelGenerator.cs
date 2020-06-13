@@ -10,6 +10,12 @@ using static Utility;
 public class LevelGenerator : MonoBehaviour
 {
     /// <summary>
+    ///     dimensions.x -> the maximum width of the map
+    ///     dimensions.y -> the maximum height of the map
+    /// </summary>
+    public Vector2Int dimensions;
+
+    /// <summary>
     ///     The layout of the level, where _levelLayout[x, y] represents the Chunk type at (x, y).
     /// </summary>
     private Chunk[,] _levelLayout;
@@ -25,20 +31,9 @@ public class LevelGenerator : MonoBehaviour
     private IDictionary<Vector2Int, Direction> _spawnPositions;
 
     /// <summary>
-    ///     The size to scale each chunk by.
-    /// </summary>
-    public float chunkSize;
-
-    /// <summary>
     ///     The number of chunks added per iteration of the algorithm.
     /// </summary>
     public uint chunksPerIteration;
-
-    /// <summary>
-    ///     dimensions.x -> the maximum width of the map
-    ///     dimensions.y -> the maximum height of the map
-    /// </summary>
-    public Vector2Int dimensions;
 
     /// <summary>
     ///     The name of the empty GameObject that acts as the parent to the level.
@@ -49,6 +44,11 @@ public class LevelGenerator : MonoBehaviour
     ///     The number of iterations for the algorithm to take. The more iterations, the more rooms.
     /// </summary>
     public uint iterations;
+
+    /// <summary>
+    ///     Regenerate the level until there's more pathable chunks than this.
+    /// </summary>
+    public uint minChunks;
 
     /// <summary>
     ///     All of the possible corridor chunks that can be spawned.
@@ -83,14 +83,13 @@ public class LevelGenerator : MonoBehaviour
     /// <summary>
     ///     Instantiates the dungeon level according to the public variables.
     /// </summary>
-    /// <returns>The empty Transform that holds all of the map objects.</returns>
-    public Transform GenerateLevel()
+    /// <returns>The empty GameObject that holds all of the map objects.</returns>
+    public Level GenerateLevel()
     {
         ValidateVariables();
         Random.InitState(seed);
         _pathableChunks = 0;
-        while (_pathableChunks < Mathf.Min(7, iterations * chunksPerIteration))
-            //TODO: Replace hardcoded value
+        while (_pathableChunks < Mathf.Min(minChunks, iterations * chunksPerIteration))
         {
             _levelLayout = new Chunk[dimensions.x, dimensions.y];
             LayoutBorderWall(RandomElement(possibleWalls));
@@ -111,9 +110,8 @@ public class LevelGenerator : MonoBehaviour
             _levelLayout[stairPos.x, stairPos.y] = RandomElement(possibleStairRooms);
             _pathableChunks++;
         }
-
         FillWithWalls();
-        return InstantiateLevelLayout();
+        return new Level(_levelLayout);
     }
 
     /// <summary>
@@ -146,7 +144,7 @@ public class LevelGenerator : MonoBehaviour
             var nextDir = nextEntry.Value;
             _spawnPositions.Remove(nextPos);
             var nextChunk = RandomElement(possibleChunks, c => ExtendsPath(c, nextDir, nextPos));
-            if (nextChunk == null)
+            if (nextChunk == null) //use ??= once C# 8.0 is supported
                 nextChunk = RandomElement(possibleChunks, c => c.HasOpening(nextDir));
             _levelLayout[nextPos.x, nextPos.y] = nextChunk;
             _pathableChunks++;
@@ -172,32 +170,7 @@ public class LevelGenerator : MonoBehaviour
             var checkPos = pos + dir.ToVector2();
             if (!_levelLayout[checkPos.x, checkPos.y]) openPath = true;
         }
-
         return entrance && openPath;
-    }
-
-    /// <summary>
-    ///     Goes through every element in _levelLayout and instantiates it at the proper position!
-    /// </summary>
-    /// <returns>The empty transform that holds the instantiated map.</returns>
-    private Transform InstantiateLevelLayout()
-    {
-        var oldMap = transform.Find(holderName);
-        if (oldMap) DestroyImmediate(oldMap.gameObject);
-        var levelHolder = new GameObject(holderName).transform;
-        levelHolder.parent = transform;
-        for (var x = 0; x < dimensions.x; x++)
-        for (var y = 0; y < dimensions.y; y++)
-        {
-            var spawnPos = Chunk.LENGTH * chunkSize * new Vector2(x, y);
-            var chunkPrefab = _levelLayout[x, y];
-            if (!chunkPrefab) continue;
-            var spawnedChunk = Instantiate(chunkPrefab, spawnPos, Quaternion.identity);
-            spawnedChunk.transform.parent = levelHolder;
-            spawnedChunk.transform.localScale = chunkSize * Vector2.one;
-        }
-
-        return levelHolder;
     }
 
     /// <summary>
@@ -236,13 +209,13 @@ public class LevelGenerator : MonoBehaviour
     ///     Throws exceptions of public variables are set to invalid values. This system of error
     ///     checking seems a bit bad, is there a way to restrict one variable to another in the
     ///     editor?
+    ///     TODO: Replace these fields with properties once the editor script is no longer needed
     /// </summary>
     private void ValidateVariables()
     {
         if (dimensions.x < 5 || dimensions.y < 5)
             throw Error("Must be larger than 4x4.");
         if (iterations == 0) throw Error("Iterations must be a positive value.");
-
         if (chunksPerIteration == 0) throw Error("Chunks per iteration must be a positive value.");
     }
 }

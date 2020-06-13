@@ -2,28 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//TODO FINISH THIS LATER
-public class Level : MonoBehaviour
+/// <summary>
+///     Represents the layout of one level.
+///     TODO: do I need this class?
+/// </summary>
+public class Level
 {
-    private Chunk[,] _levelLayout;
+    public Chunk[,] levelLayout { get; }
 
-    public Chunk[,] LevelLayout
-    {
-        set => _levelLayout = value;
-    }
+    public Level(Chunk[,] layout) => levelLayout = layout;
 
-    /// <summary>
-    ///     Instantiates chunks based on the data in _levelLayout.
-    /// </summary>
-    public void InstantiatePrefabs(float chunkSize)
+    public Vector2 SpawnPoint()
     {
-        for (var x = 0; x < _levelLayout.GetLength(0); x++)
-        for (var y = 0; y < _levelLayout.GetLength(1); y++)
-        {
-            var spawnPos = Chunk.LENGTH * chunkSize * new Vector2(x, y);
-            var chunkPrefab = _levelLayout[x, y];
-            var spawnedChunk = Instantiate(chunkPrefab, spawnPos, Quaternion.identity);
-            spawnedChunk.transform.localScale = chunkSize * Vector2.one;
-        }
+        return Vector2.zero;     // TODO 
     }
 }
