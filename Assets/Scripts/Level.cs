@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 ///     Represents the layout of one level.
@@ -8,12 +6,20 @@ using UnityEngine;
 /// </summary>
 public class Level
 {
-    public Chunk[,] levelLayout { get; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly Chunk[,] levelLayout;
 
-    public Level(Chunk[,] layout) => levelLayout = layout;
+    /// <summary>
+    ///     The x and y coordinates such that levelLayout[x, y] is where the player spawns.
+    /// </summary>
+    public readonly Vector2Int spawnPoint;
 
-    public Vector2 SpawnPoint()
+    public Level(Chunk[,] layout, Vector2Int spawn)
     {
-        return Vector2.zero;     // TODO 
+        levelLayout = layout;
+        spawnPoint = spawn;
     }
+    
 }

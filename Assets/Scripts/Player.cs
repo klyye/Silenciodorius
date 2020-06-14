@@ -12,6 +12,11 @@ public class Player : MonoBehaviour
     /// </summary>
     private PlayerController _controller;
 
+    /// <summary>
+    ///     TODO DELETE THIS
+    /// </summary>
+    public bool debugMode;
+
     public event Action OnStairReached;
 
     private void Start()
@@ -21,6 +26,10 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (debugMode && Input.GetKeyDown(KeyCode.Space))
+        {
+            OnStairReached?.Invoke();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

@@ -13,7 +13,16 @@ public class LevelGenerator : MonoBehaviour
     ///     dimensions.x -> the maximum width of the map
     ///     dimensions.y -> the maximum height of the map
     /// </summary>
-    public Vector2Int dimensions;
+    private Vector2Int _dimensions;
+    public Vector2Int dimensions
+    {
+        get => _dimensions;
+        set
+        {
+            _dimensions.x = Mathf.Max(5, value.x);
+            _dimensions.y = Mathf.Max(5, value.y);
+        }
+    }
 
     /// <summary>
     ///     The layout of the level, where _levelLayout[x, y] represents the Chunk type at (x, y).
@@ -33,22 +42,35 @@ public class LevelGenerator : MonoBehaviour
     /// <summary>
     ///     The number of chunks added per iteration of the algorithm.
     /// </summary>
-    public uint chunksPerIteration;
+    private int _chunksPerIteration;
 
-    /// <summary>
-    ///     The name of the empty GameObject that acts as the parent to the level.
-    /// </summary>
-    public string holderName;
+    public int chunksPerIteration
+    {
+        get => _chunksPerIteration;
+        set => _chunksPerIteration = Mathf.Max(1, value);
+    }
 
     /// <summary>
     ///     The number of iterations for the algorithm to take. The more iterations, the more rooms.
     /// </summary>
-    public uint iterations;
+    private int _iterations;
+
+    public int iterations
+    {
+        get => _iterations;
+        set => _iterations = Mathf.Max(1, value);
+    }
 
     /// <summary>
     ///     Regenerate the level until there's more pathable chunks than this.
     /// </summary>
-    public uint minChunks;
+    private int _minChunks;
+
+    public int minChunks
+    {
+        get => _minChunks;
+        set => _minChunks = Mathf.Min(value, iterations * chunksPerIteration);
+    }
 
     /// <summary>
     ///     All of the possible corridor chunks that can be spawned.
@@ -78,7 +100,16 @@ public class LevelGenerator : MonoBehaviour
     /// <summary>
     ///     The seed for the pseudorandom number generator that determines this level's randomness.
     /// </summary>
-    public int seed;
+    private int _seed;
+    public int seed
+    {
+        get => _seed;
+        set
+        {
+            _seed = value;
+            Random.InitState(seed);
+        }
+    }
 
     /// <summary>
     ///     Instantiates the dungeon level according to the public variables.
@@ -86,16 +117,16 @@ public class LevelGenerator : MonoBehaviour
     /// <returns>The empty GameObject that holds all of the map objects.</returns>
     public Level GenerateLevel()
     {
-        ValidateVariables();
-        Random.InitState(seed);
         _pathableChunks = 0;
-        while (_pathableChunks < Mathf.Min(minChunks, iterations * chunksPerIteration))
+        var startPos = Vector2Int.zero;
+        print("chunksper: " + chunksPerIteration + " iterations: " + iterations);
+        while (_pathableChunks < minChunks)
         {
             _levelLayout = new Chunk[dimensions.x, dimensions.y];
             LayoutBorderWall(RandomElement(possibleWalls));
             _pathableChunks = 0;
 
-            var startPos = new Vector2Int(Random.Range(2, dimensions.x - 2),
+            startPos = new Vector2Int(Random.Range(2, dimensions.x - 2),
                 Random.Range(2, dimensions.y - 2));
             var startChunk = RandomElement(possibleStartRooms);
             _levelLayout[startPos.x, startPos.y] = startChunk;
@@ -111,7 +142,8 @@ public class LevelGenerator : MonoBehaviour
             _pathableChunks++;
         }
         FillWithWalls();
-        return new Level(_levelLayout);
+        var output = new Level(_levelLayout, startPos);
+        return output;
     }
 
     /// <summary>
@@ -203,19 +235,5 @@ public class LevelGenerator : MonoBehaviour
     private bool WithinBounds(Vector2Int pos)
     {
         return pos.x >= 0 && pos.x <= dimensions.x && pos.y >= 0 && pos.y <= dimensions.y;
-    }
-
-    /// <summary>
-    ///     Throws exceptions of public variables are set to invalid values. This system of error
-    ///     checking seems a bit bad, is there a way to restrict one variable to another in the
-    ///     editor?
-    ///     TODO: Replace these fields with properties once the editor script is no longer needed
-    /// </summary>
-    private void ValidateVariables()
-    {
-        if (dimensions.x < 5 || dimensions.y < 5)
-            throw Error("Must be larger than 4x4.");
-        if (iterations == 0) throw Error("Iterations must be a positive value.");
-        if (chunksPerIteration == 0) throw Error("Chunks per iteration must be a positive value.");
     }
 }

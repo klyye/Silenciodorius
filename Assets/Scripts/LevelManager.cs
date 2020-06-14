@@ -1,14 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 ///     Advances and instantiates the current level.
 /// </summary>
-[RequireComponent(typeof(LevelGenerator))]
 public class LevelManager : MonoBehaviour
 {
-    
+    /// <summary>
+    ///     The name of the gameObject that parents all of the instantiated prefabs.
+    /// </summary>
+    private const string HolderName = "Level Holder";
+
     /// <summary>
     ///     The currently loaded level.
     /// </summary>
@@ -17,44 +20,44 @@ public class LevelManager : MonoBehaviour
     /// <summary>
     ///     How many floors we have advanced past.
     /// </summary>
-    private uint _depth;
-
-    /// <summary>
-    ///     The size to scale each chunk by.
-    /// </summary>
-    public float chunkSize;
-    
-    /// <summary>
-    ///     The name of the gameObject that parents all of the instantiated prefabs.
-    /// </summary>
-    private const string HolderName = "Level Holder";
+    private int _depth;
 
     /// <summary>
     ///     Generates the level!
     /// </summary>
     private LevelGenerator _levelGen;
 
+    /// <summary>
+    ///     The object representing the player of the game.
+    /// </summary>
+    private Player _player;
+
+    /// <summary>
+    ///     The size to scale each chunk by.
+    /// </summary>
+    public float chunkSize;
+
     private void Start()
     {
         _depth = 0;
-        InstantiateCurrentLevel();
-        
+        _player = FindObjectOfType<Player>();
+        _player.OnStairReached += AdvanceLevel;
+        _levelGen = GetComponent<LevelGenerator>();
+        _levelGen.seed = Random.Range(int.MinValue, int.MaxValue); //used random to set random lmao
+        AdvanceLevel();
     }
 
     /// <summary>
     ///     Adjusts the parameters of _levelGen in order to get more difficult with depth.
     /// </summary>
-    private void SetDifficulty()
+    private void GenerateCurrentLevel()
     {
-        // TODO
-    }
-
-    /// <summary>
-    ///     Advances to the next level.
-    /// </summary>
-    private void OnStairsReached()
-    {
-        // TODO 
+        _levelGen.dimensions = new Vector2Int(_depth / 5 + 5, _depth / 5 + 5);
+        _levelGen.iterations = _depth;
+        _levelGen.chunksPerIteration = 2;
+        _levelGen.minChunks = 7;
+        _currLevel = _levelGen.GenerateLevel(); // TODO replace hardcoded values
+        print("Depth:" + _depth);
     }
 
     /// <summary>
@@ -62,8 +65,19 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     private void AdvanceLevel()
     {
-        
+        _depth++;
+        GenerateCurrentLevel();
+        InstantiateCurrentLevel();
+        var spawnCoords = _currLevel.spawnPoint;
+        _player.transform.position = chunkSize * Chunk.LENGTH *
+                                     new Vector2(spawnCoords.x, spawnCoords.y);
     }
+
+    private void OnDestroy()
+    {
+        _player.OnStairReached -= AdvanceLevel;
+    }
+
 
     /// <summary>
     ///     Instantiates chunks based on the data in _currLevel.
@@ -71,13 +85,10 @@ public class LevelManager : MonoBehaviour
     public void InstantiateCurrentLevel()
     {
         var oldMap = transform.Find(HolderName);
-        if (oldMap) DestroyImmediate(oldMap.gameObject);
+        if (oldMap) Destroy(oldMap.gameObject);
         var mapHolder = new GameObject(HolderName).transform;
         mapHolder.parent = transform;
-        
-        _levelGen = GetComponent<LevelGenerator>();
-        _currLevel = _levelGen.GenerateLevel();    // TODO FIX THIS
-        
+
         for (var x = 0; x < _currLevel.levelLayout.GetLength(0); x++)
         for (var y = 0; y < _currLevel.levelLayout.GetLength(1); y++)
         {
