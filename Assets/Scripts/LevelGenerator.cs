@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using ExtensionMethods;
 using UnityEngine;
-using static GameException;
 using static Utility;
 
 /// <summary>
@@ -10,19 +9,20 @@ using static Utility;
 public class LevelGenerator : MonoBehaviour
 {
     /// <summary>
+    ///     The number of chunks added per iteration of the algorithm.
+    /// </summary>
+    private int _chunksPerIteration;
+
+    /// <summary>
     ///     dimensions.x -> the maximum width of the map
     ///     dimensions.y -> the maximum height of the map
     /// </summary>
     private Vector2Int _dimensions;
-    public Vector2Int dimensions
-    {
-        get => _dimensions;
-        set
-        {
-            _dimensions.x = Mathf.Max(5, value.x);
-            _dimensions.y = Mathf.Max(5, value.y);
-        }
-    }
+
+    /// <summary>
+    ///     The number of iterations for the algorithm to take. The more iterations, the more rooms.
+    /// </summary>
+    private int _iterations;
 
     /// <summary>
     ///     The layout of the level, where _levelLayout[x, y] represents the Chunk type at (x, y).
@@ -30,47 +30,24 @@ public class LevelGenerator : MonoBehaviour
     private Chunk[,] _levelLayout;
 
     /// <summary>
+    ///     Regenerate the level until there's more pathable chunks than this.
+    /// </summary>
+    private int _minChunks;
+
+    /// <summary>
     ///     The number of chunks generated that the player can walk in.
     /// </summary>
     private uint _pathableChunks;
 
     /// <summary>
+    ///     The seed for the pseudorandom number generator that determines this level's randomness.
+    /// </summary>
+    private int _seed;
+
+    /// <summary>
     ///     A mapping of valid spawn positions to the directions to enter them from.
     /// </summary>
     private IDictionary<Vector2Int, Direction> _spawnPositions;
-
-    /// <summary>
-    ///     The number of chunks added per iteration of the algorithm.
-    /// </summary>
-    private int _chunksPerIteration;
-
-    public int chunksPerIteration
-    {
-        get => _chunksPerIteration;
-        set => _chunksPerIteration = Mathf.Max(1, value);
-    }
-
-    /// <summary>
-    ///     The number of iterations for the algorithm to take. The more iterations, the more rooms.
-    /// </summary>
-    private int _iterations;
-
-    public int iterations
-    {
-        get => _iterations;
-        set => _iterations = Mathf.Max(1, value);
-    }
-
-    /// <summary>
-    ///     Regenerate the level until there's more pathable chunks than this.
-    /// </summary>
-    private int _minChunks;
-
-    public int minChunks
-    {
-        get => _minChunks;
-        set => _minChunks = Mathf.Min(value, iterations * chunksPerIteration);
-    }
 
     /// <summary>
     ///     All of the possible corridor chunks that can be spawned.
@@ -97,10 +74,34 @@ public class LevelGenerator : MonoBehaviour
     /// </summary>
     public Wall[] possibleWalls;
 
-    /// <summary>
-    ///     The seed for the pseudorandom number generator that determines this level's randomness.
-    /// </summary>
-    private int _seed;
+    public Vector2Int dimensions
+    {
+        get => _dimensions;
+        set
+        {
+            _dimensions.x = Mathf.Max(5, value.x);
+            _dimensions.y = Mathf.Max(5, value.y);
+        }
+    }
+
+    public int chunksPerIteration
+    {
+        get => _chunksPerIteration;
+        set => _chunksPerIteration = Mathf.Max(1, value);
+    }
+
+    public int iterations
+    {
+        get => _iterations;
+        set => _iterations = Mathf.Max(1, value);
+    }
+
+    public int minChunks
+    {
+        get => _minChunks;
+        set => _minChunks = Mathf.Min(value, iterations * chunksPerIteration);
+    }
+
     public int seed
     {
         get => _seed;
@@ -119,7 +120,6 @@ public class LevelGenerator : MonoBehaviour
     {
         _pathableChunks = 0;
         var startPos = Vector2Int.zero;
-        print("chunksper: " + chunksPerIteration + " iterations: " + iterations);
         while (_pathableChunks < minChunks)
         {
             _levelLayout = new Chunk[dimensions.x, dimensions.y];
@@ -141,6 +141,7 @@ public class LevelGenerator : MonoBehaviour
             _levelLayout[stairPos.x, stairPos.y] = RandomElement(possibleStairRooms);
             _pathableChunks++;
         }
+
         FillWithWalls();
         var output = new Level(_levelLayout, startPos);
         return output;
@@ -202,6 +203,7 @@ public class LevelGenerator : MonoBehaviour
             var checkPos = pos + dir.ToVector2();
             if (!_levelLayout[checkPos.x, checkPos.y]) openPath = true;
         }
+
         return entrance && openPath;
     }
 

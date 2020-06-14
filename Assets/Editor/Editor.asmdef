@@ -1,5 +1,5 @@
 {
-    "name": "EditorAssembly",
+    "name": "Editor",
     "references": [
         "GUID:8b21a4b93f981bc46afeb683a25c9f4e"
     ],
