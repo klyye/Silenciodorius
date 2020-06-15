@@ -138,6 +138,10 @@ public class LevelGenerator : MonoBehaviour
             //Print2DArray(_levelLayout);
 
             var stairPos = RandomEntry(_spawnPositions).Key;
+            /*
+             weird bug: if you take NESW corridor and NESW room out of the arrays, the stair almost
+             always spawns right next to the start. Why?
+            */
             _levelLayout[stairPos.x, stairPos.y] = RandomElement(possibleStairRooms);
             _pathableChunks++;
         }
@@ -168,6 +172,10 @@ public class LevelGenerator : MonoBehaviour
     ///     _spawnPositions. Updates _spawnPositions accordingly.
     /// </summary>
     /// <param name="possibleChunks">All possible chunks to spawn in this layer.</param>
+    /// <param name="positionsRemaining">
+    ///     The algorithm will leave at least this many spawn positions
+    ///     remaining in the _spawnPositions dictionary.
+    /// </param>
     private void GenerateLayer(Chunk[] possibleChunks)
     {
         for (var i = 0; _spawnPositions.Count > 1 && i < chunksPerIteration; i++)
