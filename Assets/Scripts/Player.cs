@@ -5,7 +5,7 @@ using UnityEngine;
 ///     Handles aspects of the Player that do NOT correspond to player input.
 /// </summary>
 [RequireComponent(typeof(PlayerController))]
-public class Player : MonoBehaviour
+public class Player : Unit
 {
     /// <summary>
     ///     The controller associated with the player.
