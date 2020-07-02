@@ -7,10 +7,6 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerController))]
 public class Player : Unit
 {
-    /// <summary>
-    ///     The controller associated with the player.
-    /// </summary>
-    private PlayerController _controller;
 
     /// <summary>
     ///     TODO DELETE THIS
@@ -18,12 +14,7 @@ public class Player : Unit
     public bool debugMode;
 
     public event Action OnStairReached;
-
-    private void Start()
-    {
-        _controller = GetComponent<PlayerController>();
-    }
-
+    
     private void Update()
     {
         if (debugMode && Input.GetKeyDown(KeyCode.Space))
