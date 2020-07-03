@@ -13,6 +13,14 @@ public class Player : Unit
     /// </summary>
     public bool debugMode;
 
+    /// <summary>
+    ///     AHH YES 5Head
+    /// </summary>
+    private uint _intelligence;
+
+    /// <summary>
+    ///     Event that fires when the player reaches the stairs.
+    /// </summary>
     public event Action OnStairReached;
     
     private void Update()

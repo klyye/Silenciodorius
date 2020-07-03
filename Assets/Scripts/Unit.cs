@@ -9,9 +9,12 @@ using UnityEngine;
 public abstract class Unit : MonoBehaviour
 {
     private float _health;
-    private uint _strength;
-    private uint _agility;
-    private uint _intelligence;
+    private float _healthRegen;
+    private float _mana;
+    private float _manaRegen;
+    private uint _level;
+    private uint _exp;
+    
     private UnitController _controller;
 
     private void Start()
