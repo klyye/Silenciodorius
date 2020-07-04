@@ -1,6 +1,6 @@
 ﻿namespace LevelGeneration
 {
-    public abstract class Corridor : Chunk
+    public class Corridor : Chunk
     {
 
         // Start is called before the first frame update
