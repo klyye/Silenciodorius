@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 
-namespace Inventory
+namespace Items
 {
-    public class Item : MonoBehaviour
+    /// <summary>
+    ///     Anything that can go into the player's inventory.
+    /// </summary>
+    public abstract class Item : MonoBehaviour
     {
         /// <summary>
         ///     What this item is called. Each type of Item has a unique name.
         /// </summary>
-        private string _name;
+        protected string _name;
 
         public override int GetHashCode()
         {
@@ -16,7 +19,7 @@ namespace Inventory
 
         public override bool Equals(object other)
         {
-            return other != null && other is Item && ((Item)other)._name.Equals(_name);
+            return other != null && other is Item item && item._name.Equals(_name);
         }
 
         public override string ToString()

@@ -7,7 +7,6 @@ namespace Units
     /// </summary>
     public class PlayerController : UnitController
     {
-
         private void FixedUpdate()
         {
             var input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));

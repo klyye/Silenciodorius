@@ -9,7 +9,7 @@ namespace Units
     [RequireComponent(typeof(Collider2D))]
     public abstract class UnitController : MonoBehaviour
     {
-        protected uint _movespeed;
+        public uint movespeed;
     
         /// <summary>
         ///     The rigidbody2d component attached to the unit.
@@ -28,7 +28,7 @@ namespace Units
         /// <param name="dir"></param>
         protected void Move(Vector2 dir)
         {
-            _rigidbody.velocity = _movespeed * dir.normalized;
+            _rigidbody.velocity = movespeed * dir.normalized;
         }
     }
 }

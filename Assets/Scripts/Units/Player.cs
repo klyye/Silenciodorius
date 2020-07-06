@@ -1,4 +1,5 @@
 ﻿using System;
+using Items;
 using UnityEngine;
 
 namespace Units
@@ -9,9 +10,6 @@ namespace Units
     [RequireComponent(typeof(PlayerController))]
     public class Player : Unit
     {
-
-        private uint _level;
-        private uint _exp;
     
         /// <summary>
         ///     TODO DELETE THIS
@@ -19,9 +17,19 @@ namespace Units
         public bool debugMode;
 
         /// <summary>
+        ///     The weapon that the player starts with.
+        /// </summary>
+        public Weapon startingWeapon;
+
+        /// <summary>
         ///     AHH YES 5Head
         /// </summary>
         private uint _intelligence;
+
+        /// <summary>
+        ///     The first camera in the scene tagged with MainCamera.
+        /// </summary>
+        private Camera _mainCam;
 
         /// <summary>
         ///     Event that fires when the player reaches the stairs.
@@ -34,6 +42,21 @@ namespace Units
             {
                 OnStairReached?.Invoke();
             }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                var mousePos = Input.mousePosition;
+                mousePos.z = _mainCam.nearClipPlane;
+                var mouseWorldPos = _mainCam.ScreenToWorldPoint(mousePos);
+                _mainhand.Attack(mouseWorldPos);
+            }
+        }
+        
+        protected override void Start()
+        {
+            base.Start();
+            _mainhand = Instantiate(startingWeapon, transform);
+            _mainCam = Camera.main;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
