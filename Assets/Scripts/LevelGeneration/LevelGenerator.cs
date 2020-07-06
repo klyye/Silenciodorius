@@ -141,9 +141,9 @@ namespace LevelGeneration
 
                 var stairPos = RandomEntry(_spawnPositions).Key;
                 /*
-             weird bug: if you take NESW corridor and NESW room out of the arrays, the stair almost
-             always spawns right next to the start. Why?
-            */
+                weird bug: if you take NESW corridor and NESW room out of the arrays, 
+                the stair almost always spawns right next to the start. Why?
+                */
                 _levelLayout[stairPos.x, stairPos.y] = RandomElement(possibleStairRooms);
                 _pathableChunks++;
             }
@@ -186,7 +186,8 @@ namespace LevelGeneration
                 var nextPos = nextEntry.Key;
                 var nextDir = nextEntry.Value;
                 _spawnPositions.Remove(nextPos);
-                var nextChunk = RandomElement(possibleChunks, c => ExtendsPath(c, nextDir, nextPos));
+                var nextChunk =
+                    RandomElement(possibleChunks, c => ExtendsPath(c, nextDir, nextPos));
                 if (nextChunk == null) //use ??= once C# 8.0 is supported
                     nextChunk = RandomElement(possibleChunks, c => c.HasOpening(nextDir));
                 _levelLayout[nextPos.x, nextPos.y] = nextChunk;

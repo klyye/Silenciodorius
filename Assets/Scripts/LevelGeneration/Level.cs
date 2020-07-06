@@ -4,7 +4,6 @@ namespace LevelGeneration
 {
     /// <summary>
     ///     Represents the layout of one level.
-    ///     TODO: do I need this class?
     /// </summary>
     public class Level
     {
