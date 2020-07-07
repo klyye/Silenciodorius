@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Items;
+using Items.Weapons;
 using UnityEngine;
 
 namespace Units
@@ -9,8 +10,13 @@ namespace Units
     ///     Anything with health that can equip an item. Not really sure how to describe units.
     /// </summary>
     [RequireComponent(typeof(UnitController))]
-    public abstract class Unit : MonoBehaviour
+    public class Unit : MonoBehaviour
     {
+        /// <summary>
+        ///     The weapon that the player starts with.
+        /// </summary>
+        public Weapon startingWeapon;
+        
         /// <summary>
         ///     How much health this unit currently has.
         /// </summary>
@@ -32,9 +38,48 @@ namespace Units
         /// </summary>
         protected IDictionary<Item, int> _inventory = new Dictionary<Item, int>();
 
+        /// <summary>
+        ///     Kills the unit.
+        /// </summary>
+        public Action Die;
+
+        /// <summary>
+        ///     Is this Unit an enemy or an ally? Players can only damage enemies.
+        /// </summary>
+        public bool isEnemy;
+
+        /// <summary>
+        ///     How much health this unit starts with.
+        /// </summary>
+        public float startingHealth;
+
         protected virtual void Start()
         {
             _controller = GetComponent<UnitController>();
+            Die = () => Destroy(gameObject);
+            _health = startingHealth;
+        }
+
+        /// <summary>
+        ///     Deals DMG damage to the unit.
+        /// </summary>
+        /// <param name="dmg">Damage to deal to the unit.</param>
+        public void TakeDamage(float dmg)
+        {
+            _health -= dmg;
+            if (_health <= 0)
+            {
+                Die();
+            }
+        }
+
+        protected virtual void OnTriggerEnter2D(Collider2D other)
+        {
+            var proj = other.gameObject.GetComponent<Projectile>();
+            if (proj)
+            {
+                TakeDamage(proj.damage);
+            }
         }
     }
 }

@@ -158,9 +158,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb96c2645ea37b14dbf5af86c09400a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugMode: 1
   startingWeapon: {fileID: 1471527313507895914, guid: 58cf4e8b22a47674190110594c1a77f1,
     type: 3}
+  isEnemy: 1
+  startingHealth: 5
+  debugMode: 1
 --- !u!1 &5363049631727169674
 GameObject:
   m_ObjectHideFlags: 0

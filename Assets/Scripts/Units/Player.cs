@@ -15,12 +15,7 @@ namespace Units
         ///     TODO DELETE THIS
         /// </summary>
         public bool debugMode;
-
-        /// <summary>
-        ///     The weapon that the player starts with.
-        /// </summary>
-        public Weapon startingWeapon;
-
+        
         /// <summary>
         ///     AHH YES 5Head
         /// </summary>
@@ -28,6 +23,7 @@ namespace Units
 
         /// <summary>
         ///     The first camera in the scene tagged with MainCamera.
+        /// TODO: i hate this. why do i need this in the class
         /// </summary>
         private Camera _mainCam;
 
@@ -50,6 +46,7 @@ namespace Units
                 var mouseWorldPos = _mainCam.ScreenToWorldPoint(mousePos);
                 _mainhand.Attack(mouseWorldPos);
             }
+
         }
         
         protected override void Start()
@@ -59,9 +56,12 @@ namespace Units
             _mainCam = Camera.main;
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        protected override void OnTriggerEnter2D(Collider2D other)
         {
-            OnStairReached?.Invoke();
+            if (other.gameObject.CompareTag("Stair"))
+            {
+                OnStairReached?.Invoke();
+            }
         }
     }
 }

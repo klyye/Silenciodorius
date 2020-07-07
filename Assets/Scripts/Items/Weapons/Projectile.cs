@@ -7,6 +7,8 @@ namespace Items.Weapons
     /// <summary>
     ///     A projectile to be fired by a weapon.
     /// </summary>
+    /// 
+    [RequireComponent(typeof(Collider2D))]
     public class Projectile : MonoBehaviour
     {
         /// <summary>
@@ -18,6 +20,11 @@ namespace Items.Weapons
         ///     How fast the projectile moves.
         /// </summary>
         public float speed;
+
+        /// <summary>
+        ///     The amount of damage that one hit of this projectile does.
+        /// </summary>
+        public float damage;
 
         private void FixedUpdate()
         {

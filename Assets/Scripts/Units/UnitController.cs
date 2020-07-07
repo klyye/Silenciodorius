@@ -7,7 +7,7 @@ namespace Units
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
-    public abstract class UnitController : MonoBehaviour
+    public class UnitController : MonoBehaviour
     {
         public uint movespeed;
 
