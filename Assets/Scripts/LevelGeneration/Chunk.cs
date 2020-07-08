@@ -6,7 +6,6 @@ namespace LevelGeneration
     /// <summary>
     ///     Represents a LENGTH x LENGTH section of lines. This is the basic unit used in MapGenerator.cs.
     /// </summary>
-    [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
     public abstract class Chunk : MonoBehaviour
     {
