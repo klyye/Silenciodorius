@@ -11,6 +11,7 @@ namespace Items
         ///     Issues an attack at the target.
         /// </summary>
         /// <param name="target">The location that is being attacked.</param>
-        public abstract void Attack(Vector2 target);
+        /// <param name="isEnemy">Is the attacker an enemy?</param>
+        public abstract void Attack(Vector2 target, bool isEnemy);
     }
 }

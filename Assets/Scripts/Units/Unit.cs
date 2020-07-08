@@ -72,14 +72,5 @@ namespace Units
                 Die();
             }
         }
-
-        protected virtual void OnTriggerEnter2D(Collider2D other)
-        {
-            var proj = other.gameObject.GetComponent<Projectile>();
-            if (proj)
-            {
-                TakeDamage(proj.damage);
-            }
-        }
     }
 }

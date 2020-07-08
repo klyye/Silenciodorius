@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6868712877034433698}
   - component: {fileID: 326859175351731371}
   - component: {fileID: -153979746387752091}
+  - component: {fileID: 7572903993625332971}
   m_Layer: 0
   m_Name: GlaivesOfWisdomProj
   m_TagString: Untagged
@@ -97,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 12
   damage: 1
+  isEnemy: 0
 --- !u!61 &-153979746387752091
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -123,3 +125,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.28, y: 1.28}
   m_EdgeRadius: 0
+--- !u!50 &7572903993625332971
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6868712877034433629}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

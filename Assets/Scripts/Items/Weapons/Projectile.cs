@@ -1,6 +1,7 @@
 ﻿using System;
 using Units;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Items.Weapons
 {
@@ -9,6 +10,7 @@ namespace Items.Weapons
     /// </summary>
     /// 
     [RequireComponent(typeof(Collider2D))]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class Projectile : MonoBehaviour
     {
         /// <summary>
@@ -26,21 +28,51 @@ namespace Items.Weapons
         /// </summary>
         public float damage;
 
+        /// <summary>
+        ///     The rigidbody 2d component attached to this projectile.
+        /// </summary>
+        private Rigidbody2D _rigidbody;
+        
+        /// <summary>
+        ///     Did this projectile come from an enemy?
+        /// </summary>
+        [HideInInspector]
+        public bool isEnemy;
+
         private void FixedUpdate()
         {
-            transform.Translate(Time.fixedDeltaTime * speed * transform.right, Space.World);
+            _rigidbody.velocity = speed * transform.right;
         }
 
         private void Start()
         {
             Die = () => Destroy(gameObject);
             FindObjectOfType<Player>().OnStairReached += Die;
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _rigidbody.bodyType = RigidbodyType2D.Kinematic;
         }
 
         private void OnDestroy()
         {
             var player = FindObjectOfType<Player>();
             if (player != null) player.OnStairReached -= Die;
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            var unit = other.GetComponent<Unit>();
+            if (unit && unit.isEnemy != isEnemy)
+            {
+                unit.TakeDamage(damage);
+                Destroy(gameObject);
+            }
+
+            //TODO: DRY
+            var tilemap = other.GetComponent<Tilemap>();
+            if (tilemap)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

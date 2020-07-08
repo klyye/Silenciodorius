@@ -18,10 +18,12 @@ namespace Items.Weapons
             _name = "Glaives of Wisdom"; //is this a magic constant?
         }
 
-        public override void Attack(Vector2 target)
+        public override void Attack(Vector2 target, bool isEnemy)
         {
-            var proj = Instantiate(glaive, transform.position, Quaternion.identity).transform;
-            proj.right = target - (Vector2) proj.position;
+            var proj = Instantiate(glaive, transform.position, Quaternion.identity);
+            var projTransform = proj.transform;
+            projTransform.right = target - (Vector2) projTransform.position;
+            proj.isEnemy = isEnemy;
         }
     }
 }

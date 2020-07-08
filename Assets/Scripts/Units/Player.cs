@@ -1,6 +1,7 @@
 ﻿using System;
 using Items;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Units
 {
@@ -44,7 +45,7 @@ namespace Units
                 var mousePos = Input.mousePosition;
                 mousePos.z = _mainCam.nearClipPlane;
                 var mouseWorldPos = _mainCam.ScreenToWorldPoint(mousePos);
-                _mainhand.Attack(mouseWorldPos);
+                _mainhand.Attack(mouseWorldPos, isEnemy);
             }
 
         }
@@ -56,12 +57,20 @@ namespace Units
             _mainCam = Camera.main;
         }
 
-        protected override void OnTriggerEnter2D(Collider2D other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Stair"))
             {
                 OnStairReached?.Invoke();
             }
+        }
+
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            print("Player collides with " + other.gameObject.name);
+            if (other.gameObject.GetComponent<Rigidbody2D>()) ;
+            print("yeah rb2d");
+            
         }
     }
 }
