@@ -64,13 +64,5 @@ namespace Units
                 OnStairReached?.Invoke();
             }
         }
-
-        private void OnCollisionEnter2D(Collision2D other)
-        {
-            print("Player collides with " + other.gameObject.name);
-            if (other.gameObject.GetComponent<Rigidbody2D>()) ;
-            print("yeah rb2d");
-            
-        }
     }
 }

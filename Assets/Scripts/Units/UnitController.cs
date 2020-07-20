@@ -26,7 +26,7 @@ namespace Units
         ///     use property maybe?
         /// </summary>
         /// <param name="dir"></param>
-        protected void Move(Vector2 dir)
+        public void Move(Vector2 dir)
         {
             _rigidbody.velocity = movespeed * dir.normalized;
         }
