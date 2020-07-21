@@ -39,13 +39,15 @@ namespace Units
             {
                 OnStairReached?.Invoke();
             }
-
-            if (Input.GetMouseButtonUp(0))
+            
+            _attackTimer -= Time.deltaTime;    //TODO: DRY
+            if (Input.GetMouseButtonDown(0) && _attackTimer <= 0)
             {
                 var mousePos = Input.mousePosition;
                 mousePos.z = _mainCam.nearClipPlane;
                 var mouseWorldPos = _mainCam.ScreenToWorldPoint(mousePos);
                 _mainhand.Attack(mouseWorldPos, isEnemy);
+                _attackTimer = attackTime;
             }
 
         }

@@ -6,6 +6,8 @@ namespace Units
     ///     A basic creep enemy with a clap attack.
     ///     ʕ͡·ᴥ͡·ʔ You've been visited by Hellbear Smasher of fortune.
     ///     Clap your hands and copy paste this 5 times for EZ LIFE and EZ RARES ʕ͡·ᴥ͡·ʔ
+    ///
+    ///     TODO: BEARS AND DAMAGE ZONES SHOULD DELETE UPON FINISHING A FLOOR
     /// </summary>
     public class Hellbear : Unit
     {
@@ -44,30 +46,35 @@ namespace Units
             base.Start();
             _currState = State.Idle;
             _player = FindObjectOfType<Player>().transform;
-            _mainhand = Instantiate(startingWeapon, transform);    //TODO: DRY (repeats with player)
+            _mainhand = Instantiate(startingWeapon, transform); //TODO: DRY (repeats with player)
         }
 
-        private void Update()
+        protected void Update()
         {
             var sqrDist = Vector2.SqrMagnitude(transform.position - _player.position);
             //TODO: is there a shorter way to write this?
             if (sqrDist < attackRange)
             {
-                _currState = State.Chasing;
+                _currState = State.Attacking;
             }
             else if (sqrDist < aggroRange)
             {
-                _currState = State.Attacking;
+                _currState = State.Chasing;
             }
             else
             {
                 _currState = State.Idle;
             }
 
+            _attackTimer -= Time.deltaTime;
             switch (_currState)
             {
                 case State.Attacking:
-                    _mainhand.Attack(_player.position, true);
+                    if (_attackTimer <= 0)
+                    {
+                        _attackTimer = attackTime;
+                        _mainhand.Attack(_player.position, true);
+                    }
                     break;
                 case State.Chasing:
                     _controller.Move(_player.position - transform.position);

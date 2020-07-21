@@ -10,7 +10,7 @@ namespace Units
     ///     Anything with health that can equip an item. Not really sure how to describe units.
     /// </summary>
     [RequireComponent(typeof(UnitController))]
-    public class Unit : MonoBehaviour
+    public abstract class Unit : MonoBehaviour
     {
         /// <summary>
         ///     The weapon that the player starts with.
@@ -53,11 +53,22 @@ namespace Units
         /// </summary>
         public float startingHealth;
 
+        /// <summary>
+        ///     How many seconds must pass after an attack before a unit can attack again.
+        /// </summary>
+        public float attackTime;
+
+        /// <summary>
+        ///     The time, in seconds, until the next attack.
+        /// </summary>
+        protected float _attackTimer;
+
         protected virtual void Start()
         {
             _controller = GetComponent<UnitController>();
             Die = () => Destroy(gameObject);
             _health = startingHealth;
+            _attackTimer = attackTime;
         }
 
         /// <summary>
@@ -67,6 +78,7 @@ namespace Units
         public void TakeDamage(float dmg)
         {
             _health -= dmg;
+            print($"Ow! {gameObject.name} just took {dmg} damage!");
             if (_health <= 0)
             {
                 Die();

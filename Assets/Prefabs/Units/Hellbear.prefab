@@ -161,5 +161,6 @@ MonoBehaviour:
     type: 3}
   isEnemy: 1
   startingHealth: 5
+  attackTime: 3
   aggroRange: 81
   attackRange: 36

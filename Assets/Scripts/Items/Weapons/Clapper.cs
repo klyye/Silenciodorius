@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,21 +10,15 @@ namespace Items.Weapons
     /// </summary>
     public class Clapper : Weapon
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        /// <summary>
+        ///     The DamageZone that is spawned when the clapper attacks.
+        /// </summary>
+        public DamageZone damageZone;
 
         public override void Attack(Vector2 target, bool isEnemy)
         {
-            print("Clapped!");
+            Instantiate(damageZone, target, Quaternion.identity);
+            damageZone.isEnemy = isEnemy;
         }
     }
 }
