@@ -11,13 +11,9 @@ namespace Items.Weapons
     /// 
     [RequireComponent(typeof(Collider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(DiesOnNextLevel))]
     public class Projectile : MonoBehaviour
     {
-        /// <summary>
-        ///     Kills the projectile.
-        /// </summary>
-        private Action Die;
-
         /// <summary>
         ///     How fast the projectile moves.
         /// </summary>
@@ -46,16 +42,8 @@ namespace Items.Weapons
 
         private void Start()
         {
-            Die = () => Destroy(gameObject);
-            FindObjectOfType<Player>().OnStairReached += Die;
             _rigidbody = GetComponent<Rigidbody2D>();
             _rigidbody.bodyType = RigidbodyType2D.Kinematic;
-        }
-
-        private void OnDestroy()
-        {
-            var player = FindObjectOfType<Player>();
-            if (player != null) player.OnStairReached -= Die;
         }
 
         private void OnTriggerEnter2D(Collider2D other)

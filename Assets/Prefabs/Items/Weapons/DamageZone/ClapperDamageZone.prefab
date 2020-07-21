@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2030347034039965120}
   - component: {fileID: 3782356186476386354}
   - component: {fileID: 1594257267813922238}
+  - component: {fileID: 5621506035116972554}
   m_Layer: 0
   m_Name: ClapperDamageZone
   m_TagString: Untagged
@@ -62,7 +63,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  timeBtwnTicks: 1
+  timeBtwnTicks: 2
   numTicks: 1
   isEnemy: 1
 --- !u!212 &1594257267813922238
@@ -115,3 +116,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5621506035116972554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3015837900412098307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30e0d11731868934ea8d0eae59627584, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

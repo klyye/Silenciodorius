@@ -9,6 +9,7 @@ namespace Items.Weapons
     ///     A zone that deals damage at a set frequency, then despawns.
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
+    [RequireComponent(typeof(DiesOnNextLevel))]
     public class DamageZone : MonoBehaviour
     {
         /// <summary>
@@ -88,7 +89,7 @@ namespace Items.Weapons
             }
         }
 
-        private void OnTriggerExit(Collider other)
+        private void OnTriggerExit2D(Collider2D other)
         {
             var unit = other.GetComponent<Unit>();
             if (unit)

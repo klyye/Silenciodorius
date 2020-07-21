@@ -161,7 +161,7 @@ MonoBehaviour:
   startingWeapon: {fileID: 1471527313507895914, guid: 58cf4e8b22a47674190110594c1a77f1,
     type: 3}
   isEnemy: 0
-  startingHealth: 5
+  startingHealth: 15
   attackTime: 0.3
   debugMode: 1
 --- !u!1 &5363049631727169674
