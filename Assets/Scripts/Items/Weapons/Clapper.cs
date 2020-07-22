@@ -17,8 +17,8 @@ namespace Items.Weapons
 
         public override void Attack(Vector2 target, bool isEnemy)
         {
-            Instantiate(damageZone, target, Quaternion.identity);
-            damageZone.isEnemy = isEnemy;
+            var zone = Instantiate(damageZone, target, Quaternion.identity);
+            zone.isEnemy = isEnemy;
         }
     }
 }

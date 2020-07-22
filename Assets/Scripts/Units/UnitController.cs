@@ -21,14 +21,9 @@ namespace Units
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        /// <summary>
-        ///     TODO: rename this? not "move", more like "set velocity"
-        ///     use property maybe?
-        /// </summary>
-        /// <param name="dir"></param>
-        public void Move(Vector2 dir)
+        public Vector2 Direction
         {
-            _rigidbody.velocity = movespeed * dir.normalized;
+            set => _rigidbody.velocity = movespeed * value.normalized;
         }
     }
 }

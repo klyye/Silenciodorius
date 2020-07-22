@@ -30,6 +30,7 @@ namespace Items.Weapons
         /// <summary>
         ///     Does this DamageZone effect units where isEnemy is false?
         /// </summary>
+        [HideInInspector]
         public bool isEnemy;
 
         /// <summary>

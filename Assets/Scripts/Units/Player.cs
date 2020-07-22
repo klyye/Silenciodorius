@@ -16,6 +16,11 @@ namespace Units
         ///     TODO DELETE THIS
         /// </summary>
         public bool debugMode;
+
+        /// <summary>
+        ///     We aren't doing multiplayer, so there's only one Player instance, and it's HERE.
+        /// </summary>
+        public static Player instance;
         
         /// <summary>
         ///     AHH YES 5Head
@@ -23,48 +28,38 @@ namespace Units
         private uint _intelligence;
 
         /// <summary>
-        ///     The first camera in the scene tagged with MainCamera.
-        /// TODO: i hate this. why do i need this in the class
-        /// </summary>
-        private Camera _mainCam;
-
-        /// <summary>
         ///     Event that fires when the player reaches the stairs.
         /// </summary>
         public event Action OnStairReached;
-    
-        private void Update()
+
+        private void Awake()
         {
+            instance = this;
+        }
+        
+        protected override void Update()
+        {
+            base.Update();
             if (debugMode && Input.GetKeyDown(KeyCode.Space))
             {
                 OnStairReached?.Invoke();
             }
-            
-            _attackTimer -= Time.deltaTime;    //TODO: DRY
+
             if (Input.GetMouseButtonDown(0) && _attackTimer <= 0)
             {
                 var mousePos = Input.mousePosition;
-                mousePos.z = _mainCam.nearClipPlane;
-                var mouseWorldPos = _mainCam.ScreenToWorldPoint(mousePos);
-                _mainhand.Attack(mouseWorldPos, isEnemy);
+                mousePos.z = MainCamera.instance.nearClipPlane;
+                var mouseWorldPos = MainCamera.instance.ScreenToWorldPoint(mousePos);
+                MainhandAttack(mouseWorldPos);
                 _attackTimer = attackTime;
             }
-
-        }
-        
-        protected override void Start()
-        {
-            base.Start();
-            _mainhand = Instantiate(startingWeapon, transform);
-            _mainCam = Camera.main;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Stair"))
-            {
                 OnStairReached?.Invoke();
-            }
+            
         }
     }
 }

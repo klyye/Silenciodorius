@@ -30,7 +30,7 @@ namespace Units
         /// <summary>
         ///     The current main hand weapon of the Unit.
         /// </summary>
-        protected Weapon _mainhand;
+        private Weapon _mainhand;
         
         /// <summary>
         ///     A collection of items that the unit currently holds. The dictionary maps the Item to
@@ -69,6 +69,25 @@ namespace Units
             Die = () => Destroy(gameObject);
             _health = startingHealth;
             _attackTimer = attackTime;
+            _mainhand = Instantiate(startingWeapon, transform);
+        }
+
+        /// <summary>
+        ///     If the attack timer allows it, attack the target using the mainhand weapon.
+        /// </summary>
+        /// <param name="target">The location to attack with the weapon.</param>
+        protected void MainhandAttack(Vector2 target)
+        {
+            if (_attackTimer <= 0)
+            {
+                _attackTimer = attackTime;
+                _mainhand.Attack(target, isEnemy);
+            }
+        }
+
+        protected virtual void Update()
+        {
+            _attackTimer -= Time.deltaTime;
         }
 
         /// <summary>
@@ -79,10 +98,7 @@ namespace Units
         {
             _health -= dmg;
             print($"Ow! {gameObject.name} just took {dmg} damage!");
-            if (_health <= 0)
-            {
-                Die();
-            }
+            if (_health <= 0) Die();
         }
     }
 }

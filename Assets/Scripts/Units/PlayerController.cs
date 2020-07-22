@@ -10,7 +10,7 @@ namespace Units
         private void FixedUpdate()
         {
             var input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            Move(input);
+            Direction = input;
         }
     }
 }

@@ -28,12 +28,11 @@ namespace Items.Weapons
         ///     The rigidbody 2d component attached to this projectile.
         /// </summary>
         private Rigidbody2D _rigidbody;
-        
+
         /// <summary>
         ///     Did this projectile come from an enemy?
         /// </summary>
-        [HideInInspector]
-        public bool isEnemy;
+        [HideInInspector] public bool isEnemy;
 
         private void FixedUpdate()
         {
@@ -57,10 +56,7 @@ namespace Items.Weapons
 
             //TODO: DRY
             var tilemap = other.GetComponent<Tilemap>();
-            if (tilemap)
-            {
-                Destroy(gameObject);
-            }
+            if (tilemap) Destroy(gameObject);
         }
     }
 }
