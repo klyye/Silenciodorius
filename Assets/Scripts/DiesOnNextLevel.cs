@@ -17,12 +17,12 @@ public class DiesOnNextLevel : MonoBehaviour
     private void Start()
     {
         Die = () => Destroy(gameObject);
-        FindObjectOfType<Player>().OnStairReached += Die;
+        Player.instance.OnStairReached += Die;
     }
     
     private void OnDestroy()
     {
-        var player = FindObjectOfType<Player>();
+        var player = Player.instance;
         if (player != null) player.OnStairReached -= Die;
     }
 }
