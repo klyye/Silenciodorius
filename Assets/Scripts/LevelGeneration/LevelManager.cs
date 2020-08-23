@@ -79,8 +79,7 @@ namespace LevelGeneration
         {
             _player.OnStairReached -= AdvanceLevel;
         }
-
-
+        
         /// <summary>
         ///     Instantiates chunks based on the data in _currLevel.
         /// </summary>

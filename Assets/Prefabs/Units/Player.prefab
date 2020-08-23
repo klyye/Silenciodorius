@@ -72,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1008061979
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 8b6e8dbca8b5f1742babdfcd57d4676f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -163,6 +163,8 @@ MonoBehaviour:
   isEnemy: 0
   startingHealth: 15
   attackTime: 0.3
+  healthBarPrefab: {fileID: 1878310675830287620, guid: 752dc05f6586cd74280aa716dfd7ee42,
+    type: 3}
   debugMode: 1
 --- !u!1 &5363049631727169674
 GameObject:

@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Units;
+using UnityEngine;
 
 /// <summary>
-///     TODO: "Please avoid using any sort of 'Find()' method to get references to other objects in
+///     "Please avoid using any sort of 'Find()' method to get references to other objects in
 ///     your scene. This approach is super popular among Unity users (blame the early learning
 ///     resources for that), and also super not safe, elegant or efficient. Instead, come up with a
 ///     plan to link all of your objects together through managers instantiating entities and keeping
@@ -13,13 +14,19 @@
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private void Start()
-    {
-    }
+    /// <summary>
+    ///     The instance of the Main Camera.
+    /// </summary>
+    public static Camera cam;
 
-    // Update is called once per frame
-    private void Update()
+    /// <summary>
+    ///     The instance of the player.
+    /// </summary>
+    public static Player player;
+
+    private void Awake()
     {
+        cam = Camera.main;
+        player = FindObjectOfType<Player>();
     }
 }

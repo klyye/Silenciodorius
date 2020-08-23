@@ -18,11 +18,6 @@ namespace Units
         public bool debugMode;
 
         /// <summary>
-        ///     We aren't doing multiplayer, so there's only one Player instance, and it's HERE.
-        /// </summary>
-        public static Player instance;
-        
-        /// <summary>
         ///     AHH YES 5Head
         /// </summary>
         private uint _intelligence;
@@ -32,11 +27,6 @@ namespace Units
         /// </summary>
         public event Action OnStairReached;
 
-        private void Awake()
-        {
-            instance = this;
-        }
-        
         protected override void Update()
         {
             base.Update();
@@ -48,8 +38,8 @@ namespace Units
             if (Input.GetMouseButtonDown(0) && _attackTimer <= 0)
             {
                 var mousePos = Input.mousePosition;
-                mousePos.z = MainCamera.instance.nearClipPlane;
-                var mouseWorldPos = MainCamera.instance.ScreenToWorldPoint(mousePos);
+                mousePos.z = GameManager.cam.nearClipPlane;
+                var mouseWorldPos = GameManager.cam.ScreenToWorldPoint(mousePos);
                 MainhandAttack(mouseWorldPos);
                 _attackTimer = attackTime;
             }
@@ -59,7 +49,6 @@ namespace Units
         {
             if (other.gameObject.CompareTag("Stair"))
                 OnStairReached?.Invoke();
-            
         }
     }
 }

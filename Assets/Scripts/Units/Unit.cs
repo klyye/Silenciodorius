@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Items;
 using Items.Weapons;
+using UI;
 using UnityEngine;
 
 namespace Units
@@ -57,7 +58,18 @@ namespace Units
         ///     How many seconds must pass after an attack before a unit can attack again.
         /// </summary>
         public float attackTime;
+        
+        /// <summary>
+        ///     The health bar prefab of this unit.
+        /// </summary>
+        public HealthBar healthBarPrefab;
 
+        /// <summary>
+        ///     The health bar instance currently keeping track of this unit's health.
+        ///     TODO: is there a better way to do this?
+        /// </summary>
+        private HealthBar _currHealthBar;
+        
         /// <summary>
         ///     The time, in seconds, until the next attack.
         /// </summary>
@@ -70,6 +82,8 @@ namespace Units
             _health = startingHealth;
             _attackTimer = attackTime;
             _mainhand = Instantiate(startingWeapon, transform);
+            _currHealthBar = Instantiate(healthBarPrefab, transform);
+            _currHealthBar.SetHealth(startingHealth, startingHealth);
         }
 
         /// <summary>
@@ -97,7 +111,7 @@ namespace Units
         public void TakeDamage(float dmg)
         {
             _health -= dmg;
-            print($"Ow! {gameObject.name} just took {dmg} damage!");
+            _currHealthBar.SetHealth(_health, startingHealth);
             if (_health <= 0) Die();
         }
     }

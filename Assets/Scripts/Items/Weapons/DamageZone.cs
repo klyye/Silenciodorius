@@ -30,8 +30,7 @@ namespace Items.Weapons
         /// <summary>
         ///     Does this DamageZone effect units where isEnemy is false?
         /// </summary>
-        [HideInInspector]
-        public bool isEnemy;
+        [HideInInspector] public bool isEnemy;
 
         /// <summary>
         ///     The amount of seconds until the next damage tick.
@@ -48,12 +47,18 @@ namespace Items.Weapons
         /// </summary>
         private ISet<Unit> _unitsInZone;
 
+        /// <summary>
+        ///     The sprite renderer for this damage zone.
+        /// </summary>
+        private SpriteRenderer _spriteRenderer;
+
         // Start is called before the first frame update
         void Start()
         {
             _timeUntilTick = timeBtwnTicks;
             _ticksLeft = numTicks;
             _unitsInZone = new HashSet<Unit>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         // Update is called once per frame
@@ -69,15 +74,25 @@ namespace Items.Weapons
             if (_timeUntilTick <= 0)
             {
                 _ticksLeft--;
-                foreach (var unit in _unitsInZone)
-                {
-                    if (unit.isEnemy != isEnemy)
-                    {
-                        unit.TakeDamage(damage);
-                    }
-                }
-
+                Tick();
                 _timeUntilTick = timeBtwnTicks;
+            }
+
+            _spriteRenderer.color -=
+                new Color(0, 0, 0, Time.deltaTime / (numTicks * timeBtwnTicks));
+        }
+
+        /// <summary>
+        ///     The action taken on each tick. To be more specific, damages all enemies in the zone.
+        /// </summary>
+        private void Tick()
+        {
+            foreach (var unit in _unitsInZone)
+            {
+                if (unit.isEnemy != isEnemy)
+                {
+                    unit.TakeDamage(damage);
+                }
             }
         }
 

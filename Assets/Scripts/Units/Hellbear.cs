@@ -33,7 +33,7 @@ namespace Units
         protected override void Update()
         {
             base.Update();
-            var playerTransform = Player.instance.transform;
+            var playerTransform = GameManager.player.transform;
             var dist = Vector2.Distance(transform.position, playerTransform.position);
             if (dist < attackRange) _currState = State.Attacking;
             else if (dist < aggroRange) _currState = State.Chasing;
