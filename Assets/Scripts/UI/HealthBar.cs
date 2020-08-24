@@ -24,7 +24,7 @@ namespace UI
         ///     The color of the health in the health bar.
         /// </summary>
         public Color color;
-        
+
         /// <summary>
         ///     Sets the healthbar to display a certain health value.
         /// </summary>
