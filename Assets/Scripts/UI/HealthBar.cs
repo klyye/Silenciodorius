@@ -34,13 +34,13 @@ namespace UI
         {
             slider.maxValue = maxHealth;
             slider.value = health;
+            print($"My value is {slider.value} and my maximum value is {slider.maxValue}");
         }
 
         private void Update()
         {
             slider.transform.position = GameManager.cam.WorldToScreenPoint(transform.parent
                 .position + offset);
-            
         }
 
         private void Start()

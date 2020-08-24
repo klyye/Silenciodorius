@@ -163,7 +163,7 @@ MonoBehaviour:
   isEnemy: 0
   startingHealth: 15
   attackTime: 0.3
-  healthBarPrefab: {fileID: 1878310675830287620, guid: 752dc05f6586cd74280aa716dfd7ee42,
+  healthBarPrefab: {fileID: 3394197754241279280, guid: 752dc05f6586cd74280aa716dfd7ee42,
     type: 3}
   debugMode: 1
 --- !u!1 &5363049631727169674
