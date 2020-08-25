@@ -16,6 +16,11 @@ namespace UI
         /// </summary>
         [SerializeField] private Image pauseMenu;
 
+        /// <summary>
+        ///     Displays how many floors the player has gone through.
+        /// </summary>
+        
+
         private void Start()
         {
             PauseUI = false;

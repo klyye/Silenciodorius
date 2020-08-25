@@ -22,6 +22,5 @@ namespace LevelGeneration
             levelLayout = layout;
             spawnPoint = spawn;
         }
-    
     }
 }
