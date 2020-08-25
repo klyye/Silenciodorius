@@ -34,7 +34,6 @@ namespace UI
         {
             slider.maxValue = maxHealth;
             slider.value = health;
-            print($"My value is {slider.value} and my maximum value is {slider.maxValue}");
         }
 
         private void Update()

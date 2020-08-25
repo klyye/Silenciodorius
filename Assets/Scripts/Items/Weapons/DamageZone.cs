@@ -52,6 +52,11 @@ namespace Items.Weapons
         /// </summary>
         private SpriteRenderer _spriteRenderer;
 
+        /// <summary>
+        ///     Is this damage zone currently applying a damage tick?
+        /// </summary>
+        private bool _ticking;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -59,6 +64,7 @@ namespace Items.Weapons
             _ticksLeft = numTicks;
             _unitsInZone = new HashSet<Unit>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
+            _ticking = false;
         }
 
         // Update is called once per frame
@@ -87,6 +93,7 @@ namespace Items.Weapons
         /// </summary>
         private void Tick()
         {
+            _ticking = true;
             foreach (var unit in _unitsInZone)
             {
                 if (unit.isEnemy != isEnemy)
@@ -94,6 +101,7 @@ namespace Items.Weapons
                     unit.TakeDamage(damage);
                 }
             }
+            _ticking = false;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -108,7 +116,7 @@ namespace Items.Weapons
         private void OnTriggerExit2D(Collider2D other)
         {
             var unit = other.GetComponent<Unit>();
-            if (unit)
+            if (unit & !_ticking)
             {
                 _unitsInZone.Remove(unit);
             }

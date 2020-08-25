@@ -27,6 +27,11 @@ namespace Units
         /// </summary>
         public event Action OnStairReached;
 
+        /// <summary>
+        ///     Event that fires when the player dies.
+        /// </summary>
+        public event Action OnPlayerDeath;
+
         protected override void Update()
         {
             base.Update();
@@ -49,6 +54,12 @@ namespace Units
         {
             if (other.gameObject.CompareTag("Stair"))
                 OnStairReached?.Invoke();
+        }
+
+        protected override void Die()
+        {
+            OnPlayerDeath?.Invoke();
+            base.Die();
         }
     }
 }

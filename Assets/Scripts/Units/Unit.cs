@@ -32,17 +32,6 @@ namespace Units
         ///     The current main hand weapon of the Unit.
         /// </summary>
         private Weapon _mainhand;
-        
-        /// <summary>
-        ///     A collection of items that the unit currently holds. The dictionary maps the Item to
-        ///     the amount of that Item which is currently being held.
-        /// </summary>
-        protected IDictionary<Item, int> _inventory = new Dictionary<Item, int>();
-
-        /// <summary>
-        ///     Kills the unit.
-        /// </summary>
-        public Action Die;
 
         /// <summary>
         ///     Is this Unit an enemy or an ally? Players can only damage enemies.
@@ -78,7 +67,6 @@ namespace Units
         protected virtual void Start()
         {
             _controller = GetComponent<UnitController>();
-            Die = () => Destroy(gameObject);
             _health = startingHealth;
             _attackTimer = attackTime;
             _mainhand = Instantiate(startingWeapon, transform);
@@ -97,6 +85,14 @@ namespace Units
                 _attackTimer = attackTime;
                 _mainhand.Attack(target, isEnemy);
             }
+        }
+
+        /// <summary>
+        ///     Die.
+        /// </summary>
+        protected virtual void Die()
+        {
+            Destroy(gameObject);
         }
 
         protected virtual void Update()

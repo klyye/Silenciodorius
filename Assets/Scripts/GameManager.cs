@@ -1,5 +1,6 @@
 ﻿using Units;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 ///     "Please avoid using any sort of 'Find()' method to get references to other objects in
@@ -24,9 +25,24 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static Player player;
 
+    /// <summary>
+    ///     Whether the game is currently being player (i.e. not paused, not in main menu, not in
+    ///     death screen).
+    /// </summary>
+    public bool isPlaying;
+    
     private void Awake()
     {
         cam = Camera.main;
         player = FindObjectOfType<Player>();
+        player.OnPlayerDeath += GameOver;
+    }
+
+    /// <summary>
+    ///     Loads the Main Menu scene.
+    /// </summary>
+    private void GameOver()
+    {
+        SceneManager.LoadScene("Scenes/MainMenu");
     }
 }
