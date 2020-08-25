@@ -1,5 +1,4 @@
 ----------------UI----------------
-Depth counter
 Inventory screen (like poe/stardew valley)
 Options menu
 Controls screen

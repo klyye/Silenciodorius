@@ -32,8 +32,7 @@ namespace UI
         private void Update()
         {
             slider.transform.position =
-                GameManager.cam.WorldToScreenPoint(transform.parent.position) + offset;
-            //TODO: weird jitteriness when advancing level
+                GameManager.cam.WorldToScreenPoint(transform.parent.position + offset);
         }
         
         /// <summary>

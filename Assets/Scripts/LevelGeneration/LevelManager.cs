@@ -59,7 +59,7 @@ namespace LevelGeneration
             _levelGen.chunksPerIteration = 2;
             _levelGen.minChunks = 7;
             _currLevel = _levelGen.GenerateLevel(); // TODO replace hardcoded values
-            print("Depth:" + _depth);
+            GameManager.uiManager.UpdateDepthCounter(_depth);
         }
 
         /// <summary>
