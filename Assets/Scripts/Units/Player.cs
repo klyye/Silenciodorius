@@ -35,12 +35,14 @@ namespace Units
         protected override void Update()
         {
             base.Update();
-            if (debugMode && Input.GetKeyDown(KeyCode.Space))
-            {
-                OnStairReached?.Invoke();
-            }
+            #if UNITY_EDITOR
+                if (debugMode && Input.GetKeyDown(KeyCode.Space))
+                {
+                    OnStairReached?.Invoke();
+                }
+            #endif
 
-            if (Input.GetMouseButtonDown(0) && _attackTimer <= 0)
+            if (Input.GetMouseButtonDown(0) && _attackTimer <= 0 && GameManager.isPlaying)
             {
                 var mousePos = Input.mousePosition;
                 mousePos.z = GameManager.cam.nearClipPlane;
