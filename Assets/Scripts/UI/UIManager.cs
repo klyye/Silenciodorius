@@ -14,6 +14,8 @@ namespace UI
         /// <summary>
         ///     The Pause menu gameobject.
         /// </summary>
+        /// Annoying: Doing [SerializeField] on private fields give warnings about the field not
+        /// being initialized.
         [SerializeField] private Image pauseMenu;
 
         /// <summary>
