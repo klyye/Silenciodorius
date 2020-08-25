@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Units;
 using UnityEngine;
 
 /// <summary>
@@ -19,10 +16,9 @@ public class DiesOnNextLevel : MonoBehaviour
         Die = () => Destroy(gameObject);
         GameManager.player.OnStairReached += Die;
     }
-    
+
     private void OnDestroy()
     {
-        var player = GameManager.player;
-        if (player != null) player.OnStairReached -= Die;
+        if (GameManager.player != null) GameManager.player.OnStairReached -= Die;
     }
 }

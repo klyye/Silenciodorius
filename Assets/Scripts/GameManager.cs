@@ -1,4 +1,6 @@
-﻿using Units;
+﻿using System;
+using UI;
+using Units;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -27,15 +29,22 @@ public class GameManager : MonoBehaviour
 
     /// <summary>
     ///     Whether the game is currently being player (i.e. not paused, not in main menu, not in
-    ///     death screen).
+    ///     death screen, not in inventory screen).
     /// </summary>
-    public bool isPlaying;
+    public static bool isPlaying;
+
+    /// <summary>
+    ///     The UI Manager object.
+    /// </summary>
+    public static UIManager uiManager;
     
     private void Awake()
     {
         cam = Camera.main;
         player = FindObjectOfType<Player>();
         player.OnPlayerDeath += GameOver;
+        uiManager = FindObjectOfType<UIManager>();
+        Resume();
     }
 
     /// <summary>
@@ -44,5 +53,40 @@ public class GameManager : MonoBehaviour
     private void GameOver()
     {
         SceneManager.LoadScene("Scenes/MainMenu");
+    }
+
+    /// <summary>
+    ///     Pauses the game.
+    /// </summary>
+    public void Pause()
+    {
+        Time.timeScale = 0;
+        isPlaying = false;
+    }
+
+    /// <summary>
+    ///     Resumes the game, if paused.
+    /// </summary>
+    public void Resume()
+    {
+        Time.timeScale = 1;
+        isPlaying = true;
+        uiManager.PauseUI = false;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isPlaying)
+            {
+                Pause();
+                uiManager.PauseUI = true;
+            }
+            else
+            {
+                Resume();
+            }
+        }
     }
 }

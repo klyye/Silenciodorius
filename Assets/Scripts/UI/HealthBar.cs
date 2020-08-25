@@ -9,22 +9,33 @@ namespace UI
     /// </summary>
     public class HealthBar : MonoBehaviour
     {
-
         /// <summary>
         ///     The Slider UI object the shows the health bar.
         /// </summary>
         public Slider slider;
-        
+
         /// <summary>
         ///     The offset from the center of the sprite that the health bar should appear at.
         /// </summary>
         public Vector3 offset;
-        
+
         /// <summary>
         ///     The color of the health in the health bar.
         /// </summary>
         public Color color;
 
+        private void Start()
+        {
+            slider.fillRect.GetComponentInChildren<Image>().color = color;
+        }
+
+        private void Update()
+        {
+            slider.transform.position =
+                GameManager.cam.WorldToScreenPoint(transform.parent.position) + offset;
+            //TODO: weird jitteriness when advancing level
+        }
+        
         /// <summary>
         ///     Sets the healthbar to display a certain health value.
         /// </summary>
@@ -34,17 +45,6 @@ namespace UI
         {
             slider.maxValue = maxHealth;
             slider.value = health;
-        }
-
-        private void Update()
-        {
-            slider.transform.position = GameManager.cam.WorldToScreenPoint(transform.parent
-                .position + offset);
-        }
-
-        private void Start()
-        {
-            slider.fillRect.GetComponentInChildren<Image>().color = color;
         }
     }
 }
