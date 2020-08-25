@@ -5,6 +5,7 @@ namespace UI
 {
     /// <summary>
     ///     Handles the user interface while the game is running.
+    /// TODO: depth counter and pause menu
     /// </summary>
     [RequireComponent(typeof(Canvas))]
     public class UIManager : MonoBehaviour

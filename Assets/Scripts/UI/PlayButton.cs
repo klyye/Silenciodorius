@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
-///     Controls the Main Menu UI elements in the Main Menu scene.
+///     Loads the game scene when the button is pressed.
 /// </summary>
-public class MainMenu : MonoBehaviour
+[RequireComponent(typeof(Button))]
+public class PlayButton : MonoBehaviour
 {
     /// <summary>
     ///     Loads the game scene when the start button is pressed.
     /// </summary>
-    public void StartButton()
+    public void Play()
     {
         SceneManager.LoadScene("Scenes/Game");
     }
