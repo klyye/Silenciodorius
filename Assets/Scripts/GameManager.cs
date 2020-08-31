@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
         player = FindObjectOfType<Player>();
         player.OnPlayerDeath += GameOver;
         uiManager = FindObjectOfType<UIManager>();
+        QualitySettings.vSyncCount = 1;    //Really bad screen tearing
         Resume();
     }
 
