@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     /// <summary>
     ///     Whether the game is currently being player (i.e. not paused, not in main menu, not in
-    ///     death screen, not in inventory screen).
+    ///     death screen, not in inventory screen). 
     /// </summary>
     public static bool isPlaying;
 
